@@ -18,6 +18,8 @@ class StaffCreationForm(forms.ModelForm):
         return user
     
     
+
+
 class StudentRegistrationForm(UserCreationForm):
     student_id = forms.CharField(max_length=20)
     name = forms.CharField(max_length=255)
@@ -30,30 +32,3 @@ class StudentRegistrationForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
-
-    def save(self, commit=True):
-        user = super().save(commit=False)  
-        cleaned_data = self.cleaned_data
-        print('cleaned data', self.cleaned_data)
-
-        if commit:
-            user.save()
-        print(">>>> Cleaned Data:", self.cleaned_data)
-
-        if not Student.objects.filter(user=user).exists():
-            student = Student(
-                user=user,  # Link the user to the student
-                student_id=self.cleaned_data['student_id'],
-                name=self.cleaned_data['name'],
-                department=self.cleaned_data['department'],
-                session=self.cleaned_data['session'],
-                email=self.cleaned_data['email'],
-                mobile_number=self.cleaned_data['mobile_number'],
-                profile_image=self.cleaned_data['profile_image'],
-        )
-            student.save()
-            print(">>> Student saved:", student) 
-        else:
-            print("student already exists for this user.")
-
-        return user    

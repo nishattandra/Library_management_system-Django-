@@ -53,6 +53,8 @@ def home(request):
             'search_text': search_text,
             'departments': departments,
         })
+    
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -84,32 +86,55 @@ def logout_view(request):
     return redirect('home')
 
 
-# Student Registration view
+
 def student_register(request):
     if request.method == 'POST':
         form = StudentRegistrationForm(request.POST, request.FILES)
+        
         if form.is_valid():
             try:
-                user = form.save()  
-                print(f"User {user.username} created successfully")
+                user = form.save()
+                print("User created:", user.username)
+
+                print("cleaned_data:", form.cleaned_data)
+
+                student = Student.objects.create(
+                    user=user,
+                    student_id=form.cleaned_data['student_id'],
+                    name=form.cleaned_data['name'],
+                    department=form.cleaned_data['department'],
+                    session=form.cleaned_data['session'],
+                    email=form.cleaned_data['email'],
+                    mobile_number=form.cleaned_data['mobile_number'],
+                    profile_image=form.cleaned_data['profile_image'],
+                )
+
+                print("Student created:", student)
+
                 messages.success(request, "Registration successful. Please wait for admin approval.")
                 return redirect('student_registration_complete')
-            except IntegrityError as e:
-                if 'library_student.student_id' in str(e):
-                    form.add_error('student_id', 'This student ID is already registered. Please choose a unique one.')
-                elif 'library_student.email' in str(e):
-                    form.add_error('email', 'This email is already registered. Please use a different one.')
+            
+            except Exception as e:
+                print("Exception during saving student:", e)
                 return render(request, 'registration/student_register.html', {'form': form})
         else:
-            messages.error(request, f"Form errors: {form.errors}")
-            return render(request, 'registration/student_register.html', {'form': form})
+            print("Form is NOT valid.")
+            print(form.errors)
+            messages.error(request, "Please correct the errors below.")
     else:
+        print("GET request, rendering empty form.")
         form = StudentRegistrationForm()
+    
     return render(request, 'registration/student_register.html', {'form': form})
+
+
+
 
 # Student Registration Complete view
 def student_registration_complete(request):
     return render(request, 'registration/student_registration_complete.html')
+
+
 
 # Student Login view
 def student_login(request):

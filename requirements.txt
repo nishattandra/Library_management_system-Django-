@@ -1,0 +1,12 @@
+bcc==0.1.10
+numpy==2.2.5
+traitlets==5.14.3
+traittypes==0.2.1
+asgiref==3.8.1
+bcc==0.1.10
+Django==5.2
+numpy==2.2.5
+pillow==11.2.1
+sqlparse==0.5.3
+traitlets==5.14.3
+traittypes==0.2.1
