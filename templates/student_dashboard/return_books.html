@@ -1,0 +1,56 @@
+{% extends "student_dashboard/student_base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-9 offset-md-1">
+      <h1 class="mb-4" style="font-weight: bold;">Return Books</h1>
+      <p class="lead">Here are the books you've returned. Contact staff if
+        anything is missing.</p>
+
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <table class="table table-bordered table-hover align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Book Name</th>
+                <th>Borrow Date</th>
+                <th>Due Date</th>
+                <th>Returned On</th>
+                <th>Penalty</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for book in returned_books %}
+              <tr>
+                <td>{{ book.book.title }}</td>
+                <td>{{ book.issue_date }}</td>
+                <td>{{ book.due_date }}</td>
+                <td>{{ book.actual_return_date|default:"N/A" }}</td>
+                <td>
+                  {% if book.live_penalty > 0 %}
+                  <span class="text-danger font-weight-bold">
+                    {{ book.live_penalty }} Taka
+                  </span>
+                  {% else %}
+                  No penalty
+                  {% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4" class="text-center text-muted">No returned books
+                  found.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

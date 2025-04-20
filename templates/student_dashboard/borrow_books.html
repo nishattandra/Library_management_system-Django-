@@ -1,0 +1,47 @@
+{% extends "student_dashboard/student_base.html" %}
+
+{% block title %}Borrowed Books{% endblock %}
+
+{% block content %}
+<h3>Borrowed Books</h3>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Book ID</th>
+            <th>Book Title</th>
+            <th>Edition</th>
+            <th>Issue Date</th>
+            <th>Due Date</th>
+            <th>Return Date</th>
+            <th>Penalty</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in borrowed_books %}
+        <tr>
+            <td>{{ book.book.book_id }}</td>
+            <td>{{ book.book.title }}</td>
+            <td>{{ book.book.edition }}</td>
+            <td>{{ book.issue_date }}</td>
+            <td>{{ book.due_date }}</td>
+            <td>{{book.actual_return_date|default:"N/A"}}</td>
+            <td>
+                {% if book.live_penalty > 0 %}
+                <span class="text-danger font-weight-bold">
+                    {{ book.live_penalty }} Taka
+                </span>
+                {% else %}
+                  No penalty
+                {% endif %}
+            </td>
+            <td>Payment</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" class="text-center">No borrowed books yet.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

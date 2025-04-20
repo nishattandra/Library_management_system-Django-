@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Student Dashboard{% endblock %}</title>
+        <!-- Link to Bootstrap CSS (via CDN) -->
+        <link
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+            rel="stylesheet">
+    </head>
+    <body class="bg-light">
+        {% include 'loader.html' %}
+        <!-- Main container with full viewport height -->
+        <div class="d-flex" style="height: 100vh;">
+            <!-- Sidebar (fixed) -->
+            <div class="bg-dark text-white p-4" style="width: 250px;">
+                <h2 class="mb-4">STUDENT</h2>
+                <nav>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link text-white"
+                                href="{% url 'student_dashboard' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white"
+                                href="{% url 'borrow_books' %}">Borrow Books</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white"
+                                href="{% url 'return_books' %}">Return Books</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white"
+                                href="{% url 'profile' %}">Profile</a>
+                        </li>
+                        <li class="ml-1">
+                            <a href="{% url 'logout' %}" >
+                              <button class="btn btn-danger text-white  px-3 py-1">
+                                Logout
+                              </button>
+                            </a>
+                        </li>
+                          
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="flex-grow-1 p-5" style="overflow-y: auto;">
+                {% block content %}
+                <!-- Page-specific content will go here -->
+                {% endblock %}
+            </div>
+        </div>
+
+        <!-- Bootstrap JS and dependencies (via CDN) -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+        <script
+            src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </body>
+</html>

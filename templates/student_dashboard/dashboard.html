@@ -1,0 +1,114 @@
+{% extends "student_dashboard/student_base.html" %}
+{% load static %}
+
+{% block title %}Student Dashboard - Available Books{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">Welcome, {{ student_name }}!</h1>
+
+<div class="container my-5">
+    <h2 class="mb-4 text-center">Available Books</h2>
+
+    <!-- Row for Filter and Search -->
+    <div
+        class="row mb-3 d-flex align-items-center justify-content-between mt-4">
+        <!-- Left: Department Filter -->
+        <div class="col-auto">
+            <form method="GET" class="d-flex align-items-center">
+                {% csrf_token %}
+                <label for="dept" class="form-label mb-0 mr-2">Filter by
+                    Department:</label>
+                <select name="dept" id="dept" class="form-control me-2">
+                    <option value>All Departments</option>
+                    {% for dept in departments %}
+                    <option value="{{ dept }}" {% if selected_dept == dept %}
+                        selected {% endif %}>{{ dept }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit"
+                    class="btn btn-primary ml-2">Filter</button>
+            </form>
+        </div>
+
+        <!-- Right: Search by Title -->
+        <div class="col-auto ms-auto">
+            <form method="GET" class="d-flex align-items-center">
+                {% csrf_token %}
+                <label for="search" class="form-label mb-0 me-2">Search by
+                    Title:</label>
+                <input type="text" name="search" id="search"
+                    class="form-control mr-2" placeholder="Enter book title"
+                    value="{{ search_text }}">
+                <button type="submit" class="btn btn-secondary">Search</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Table of Books -->
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Dept.</th>
+                <th>Copies</th>
+                <th>Edition</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in page_obj.object_list %}
+            <tr>
+                <td>{{ book.title }}</td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.book_dept }}</td>
+                <td>{{ book.number_of_copies_available }}</td>
+                <td>{{ book.edition }}</td>
+                <td>
+                    {% if book.id in borrowed_books_ids or book.id in requested_book_ids or book.number_of_copies_available == 0 %}
+                    <button class="btn btn-secondary" disabled
+                        title="Unavailable">Request Book</button>
+                    {% else %}
+                    <form method="post"
+                        action="{% url 'request_book' book.id %}">
+                        {% csrf_token %}
+                        <button class="btn btn-primary">Request Book</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No books found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Pagination Summary and Controls -->
+    <div class="d-flex justify-content-between align-items-center">
+        <p class="mb-0">Showing {{ page_obj.start_index }}–{{ page_obj.end_index }} of {{ page_obj.paginator.count }}</p>
+        <ul class="pagination mb-0">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?page={{ page_obj.previous_page_number }}&dept={{ selected_dept }}&search={{ search_text }}">
+                   &laquo; Previous</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">&laquo; Previous</span></li>
+            {% endif %}
+    
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?page={{ page_obj.next_page_number }}&dept={{ selected_dept }}&search={{ search_text }}">
+                   Next &raquo;</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

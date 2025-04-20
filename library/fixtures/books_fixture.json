@@ -1,0 +1,1403 @@
+[
+    {
+      "model": "library.book",
+      "pk": 1,
+      "fields": {
+        "book_id": "B001",
+        "title": "Introduction to Algorithms",
+        "author": "Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, Clifford Stein",
+        "edition": "3rd",
+        "publication": "MIT Press",
+        "isbn": "9780262033848",
+        "number_of_copies_available": 10,
+        "book_dept": "Math"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 2,
+      "fields": {
+        "book_id": "B002",
+        "title": "Clean Code",
+        "author": "Robert C. Martin",
+        "edition": "1st",
+        "publication": "Prentice Hall",
+        "isbn": "9780132350884",
+        "number_of_copies_available": 14,
+        "book_dept": "Art"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 3,
+      "fields": {
+        "book_id": "B003",
+        "title": "Design Patterns: Elements of Reusable Object-Oriented Software",
+        "author": "Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides",
+        "edition": "1st",
+        "publication": "Addison-Wesley",
+        "isbn": "9780201633610",
+        "number_of_copies_available": 10,
+        "book_dept": "CSE"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 4,
+      "fields": {
+        "book_id": "B004",
+        "title": "Computer Networks",
+        "author": "Andrew S. Tanenbaum, David J. Wetherall",
+        "edition": "5th",
+        "publication": "Pearson",
+        "isbn": "9780132126953",
+        "number_of_copies_available": 19,
+        "book_dept": "Physics"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 5,
+      "fields": {
+        "book_id": "B005",
+        "title": "Artificial Intelligence: A Modern Approach",
+        "author": "Stuart Russell, Peter Norvig",
+        "edition": "3rd",
+        "publication": "Pearson",
+        "isbn": "9780136042594",
+        "number_of_copies_available": 10,
+        "book_dept": "Business"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 6,
+      "fields": {
+        "book_id": "B006",
+        "title": "Operating System Concepts",
+        "author": "Abraham Silberschatz, Peter B. Galvin, Greg Gagne",
+        "edition": "9th",
+        "publication": "Wiley",
+        "isbn": "9781119456339",
+        "number_of_copies_available": 18,
+        "book_dept": "Chemistry"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 7,
+      "fields": {
+        "book_id": "B007",
+        "title": "Structure and Interpretation of Computer Programs",
+        "author": "Harold Abelson, Gerald Jay Sussman",
+        "edition": "2nd",
+        "publication": "MIT Press",
+        "isbn": "9780262510875",
+        "number_of_copies_available": 6,
+        "book_dept": "English"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 8,
+      "fields": {
+        "book_id": "B008",
+        "title": "The C Programming Language",
+        "author": "Brian W. Kernighan, Dennis M. Ritchie",
+        "edition": "2nd",
+        "publication": "Prentice Hall",
+        "isbn": "9780131103627",
+        "number_of_copies_available": 7,
+        "book_dept": "CSE"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 9,
+      "fields": {
+        "book_id": "B009",
+        "title": "Data Structures and Algorithms in Python",
+        "author": "Michael T. Goodrich, Roberto Tamassia, Michael H. Goldwasser",
+        "edition": "1st",
+        "publication": "Wiley",
+        "isbn": "9781118290279",
+        "number_of_copies_available": 20,
+        "book_dept": "History"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 10,
+      "fields": {
+        "book_id": "B010",
+        "title": "Computer Architecture: A Quantitative Approach",
+        "author": "John L. Hennessy, David A. Patterson",
+        "edition": "5th",
+        "publication": "Morgan Kaufmann",
+        "isbn": "9780123838728",
+        "number_of_copies_available": 16,
+        "book_dept": "Math"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 11,
+      "fields": {
+        "book_id": "B011",
+        "title": "Modern Operating Systems",
+        "author": "Andrew S. Tanenbaum, Herbert Bos",
+        "edition": "4th",
+        "publication": "Pearson",
+        "isbn": "9780133591620",
+        "number_of_copies_available": 7,
+        "book_dept": "Sociology"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 12,
+      "fields": {
+        "book_id": "B012",
+        "title": "Database System Concepts",
+        "author": "Abraham Silberschatz, Henry F. Korth, S. Sudarshan",
+        "edition": "6th",
+        "publication": "McGraw-Hill",
+        "isbn": "9780073523323",
+        "number_of_copies_available": 9,
+        "book_dept": "Economics"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 13,
+      "fields": {
+        "book_id": "B013",
+        "title": "Introduction to the Theory of Computation",
+        "author": "Michael Sipser",
+        "edition": "3rd",
+        "publication": "Cengage Learning",
+        "isbn": "9781133187790",
+        "number_of_copies_available": 1,
+        "book_dept": "Math"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 14,
+      "fields": {
+        "book_id": "B014",
+        "title": "Algorithms",
+        "author": "Robert Sedgewick, Kevin Wayne",
+        "edition": "4th",
+        "publication": "Addison-Wesley",
+        "isbn": "9780321573513",
+        "number_of_copies_available": 13,
+        "book_dept": "Physics"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 15,
+      "fields": {
+        "book_id": "B015",
+        "title": "Programming Pearls",
+        "author": "Jon Bentley",
+        "edition": "2nd",
+        "publication": "Addison-Wesley",
+        "isbn": "9780201657883",
+        "number_of_copies_available": 2,
+        "book_dept": "Business"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 16,
+      "fields": {
+        "book_id": "B016",
+        "title": "Code Complete",
+        "author": "Steve McConnell",
+        "edition": "2nd",
+        "publication": "Microsoft Press",
+        "isbn": "9780735619678",
+        "number_of_copies_available": 5,
+        "book_dept": "Biology"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 17,
+      "fields": {
+        "book_id": "B017",
+        "title": "Refactoring: Improving the Design of Existing Code",
+        "author": "Martin Fowler",
+        "edition": "2nd",
+        "publication": "Addison-Wesley",
+        "isbn": "9780134757599",
+        "number_of_copies_available": 11,
+        "book_dept": "Chemistry"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 18,
+      "fields": {
+        "book_id": "B018",
+        "title": "Cracking the Coding Interview",
+        "author": "Gayle Laakmann McDowell",
+        "edition": "6th",
+        "publication": "CareerCup",
+        "isbn": "9780984782857",
+        "number_of_copies_available": 2,
+        "book_dept": "English"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 19,
+      "fields": {
+        "book_id": "B019",
+        "title": "Compilers: Principles, Techniques, and Tools",
+        "author": "Alfred V. Aho, Monica S. Lam, Ravi Sethi, Jeffrey D. Ullman",
+        "edition": "2nd",
+        "publication": "Addison-Wesley",
+        "isbn": "9780321486813",
+        "number_of_copies_available": 18,
+        "book_dept": "History"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 20,
+      "fields": {
+        "book_id": "B020",
+        "title": "The Pragmatic Programmer",
+        "author": "Andrew Hunt, David Thomas",
+        "edition": "2nd",
+        "publication": "Addison-Wesley",
+        "isbn": "9780135957059",
+        "number_of_copies_available": 3,
+        "book_dept": "Business"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 21,
+      "fields": {
+        "book_id": "B021",
+        "title": "Electrical Engineering: Principles and Applications",
+        "author": "Allan R. Hambley",
+        "edition": "6th",
+        "publication": "Pearson",
+        "isbn": "9780133760064",
+        "number_of_copies_available": 8,
+        "book_dept": "EEE"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 22,
+      "fields": {
+        "book_id": "B022",
+        "title": "Fundamentals of Electric Circuits",
+        "author": "Charles K. Alexander, Matthew N. O. Sadiku",
+        "edition": "5th",
+        "publication": "McGraw-Hill",
+        "isbn": "9780073380574",
+        "number_of_copies_available": 4,
+        "book_dept": "English"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 23,
+      "fields": {
+        "book_id": "B023",
+        "title": "Power System Analysis",
+        "author": "John J. Grainger, William D. Stevenson",
+        "edition": "3rd",
+        "publication": "McGraw-Hill",
+        "isbn": "9780073529588",
+        "number_of_copies_available": 20,
+        "book_dept": "Economics"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 24,
+      "fields": {
+        "book_id": "B024",
+        "title": "Modern Control Engineering",
+        "author": "Katsuhiko Ogata",
+        "edition": "5th",
+        "publication": "Prentice Hall",
+        "isbn": "9780136156734",
+        "number_of_copies_available": 3,
+        "book_dept": "Sociology"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 25,
+      "fields": {
+        "book_id": "B025",
+        "title": "Digital Signal Processing",
+        "author": "Alan V. Oppenheim, Ronald W. Schafer",
+        "edition": "3rd",
+        "publication": "Prentice Hall",
+        "isbn": "9780131988422",
+        "number_of_copies_available": 16,
+        "book_dept": "Biology"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 26,
+      "fields": {
+        "book_id": "B026",
+        "title": "Electric Machinery Fundamentals",
+        "author": "Stephen J. Chapman",
+        "edition": "5th",
+        "publication": "McGraw-Hill",
+        "isbn": "9780073380659",
+        "number_of_copies_available": 9,
+        "book_dept": "CSE"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 27,
+      "fields": {
+        "book_id": "B027",
+        "title": "Power Electronics: Converters, Applications, and Design",
+        "author": "Ned Mohan, Tore M. Undeland, William P. Robbins",
+        "edition": "3rd",
+        "publication": "Wiley",
+        "isbn": "9781118170515",
+        "number_of_copies_available": 11,
+        "book_dept": "Chemistry"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 28,
+      "fields": {
+        "book_id": "B028",
+        "title": "Circuit Analysis: Theory and Practice",
+        "author": "Roberto A. Gonzalez",
+        "edition": "2nd",
+        "publication": "Wiley",
+        "isbn": "9781118336070",
+        "number_of_copies_available": 12,
+        "book_dept": "Math"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 29,
+      "fields": {
+        "book_id": "B029",
+        "title": "Control Systems Engineering",
+        "author": "Norman S. Nise",
+        "edition": "7th",
+        "publication": "Wiley",
+        "isbn": "9781118170516",
+        "number_of_copies_available": 15,
+        "book_dept": "Physics"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 30,
+      "fields": {
+        "book_id": "B030",
+        "title": "Analog and Digital Communications",
+        "author": "Simon Haykin",
+        "edition": "5th",
+        "publication": "Wiley",
+        "isbn": "9780471697904",
+        "number_of_copies_available": 10,
+        "book_dept": "English"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 31,
+      "fields": {
+        "book_id": "B031",
+        "title": "Microelectronic Circuits",
+        "author": "Sedra and Smith",
+        "edition": "7th",
+        "publication": "Oxford University Press",
+        "isbn": "9780199339136",
+        "number_of_copies_available": 6,
+        "book_dept": "History"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 32,
+      "fields": {
+        "book_id": "B032",
+        "title": "Principles of Electric Machines and Power Electronics",
+        "author": "P.C. Sen",
+        "edition": "3rd",
+        "publication": "Wiley",
+        "isbn": "9781119451551",
+        "number_of_copies_available": 4,
+        "book_dept": "Business"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 33,
+      "fields": {
+        "book_id": "B033",
+        "title": "Digital Design",
+        "author": "M. Morris Mano",
+        "edition": "5th",
+        "publication": "Pearson",
+        "isbn": "9780132774204",
+        "number_of_copies_available": 13,
+        "book_dept": "Biology"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 34,
+      "fields": {
+        "book_id": "B034",
+        "title": "Fundamentals of Electric Power Engineering",
+        "author": "Massoud Amin",
+        "edition": "2nd",
+        "publication": "Wiley",
+        "isbn": "9781118802521",
+        "number_of_copies_available": 7,
+        "book_dept": "Economics"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 35,
+      "fields": {
+        "book_id": "B035",
+        "title": "Electric Circuits",
+        "author": "James W. Nilsson, Susan Riedel",
+        "edition": "10th",
+        "publication": "Pearson",
+        "isbn": "9780133943021",
+        "number_of_copies_available": 12,
+        "book_dept": "Sociology"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 36,
+      "fields": {
+        "book_id": "B036",
+        "title": "Signals and Systems",
+        "author": "Alan V. Oppenheim, Alan S. Willsky",
+        "edition": "2nd",
+        "publication": "Prentice Hall",
+        "isbn": "9780138147570",
+        "number_of_copies_available": 5,
+        "book_dept": "Chemistry"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 37,
+      "fields": {
+        "book_id": "B037",
+        "title": "Renewable Energy: Power for a Sustainable Future",
+        "author": "Godfrey Boyle",
+        "edition": "3rd",
+        "publication": "Oxford University Press",
+        "isbn": "9780198759560",
+        "number_of_copies_available": 2,
+        "book_dept": "Art"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 38,
+      "fields": {
+        "book_id": "B038",
+        "title": "Introduction to Mechatronics and Measurement Systems",
+        "author": "David G. Alciatore, Michael B. Histand",
+        "edition": "4th",
+        "publication": "McGraw-Hill",
+        "isbn": "9780073380673",
+        "number_of_copies_available": 16,
+        "book_dept": "EEE"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 39,
+      "fields": {
+        "book_id": "B039",
+        "title": "Modern Power System Analysis",
+        "author": "D.P. Kothari, I.J. Nagrath",
+        "edition": "2nd",
+        "publication": "PHI Learning",
+        "isbn": "9789385901222",
+        "number_of_copies_available": 10,
+        "book_dept": "Biology"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 40,
+      "fields": {
+        "book_id": "B040",
+        "title": "Applied Digital Signal Processing",
+        "author": "D.M. Mathews",
+        "edition": "1st",
+        "publication": "Prentice Hall",
+        "isbn": "9780136099753",
+        "number_of_copies_available": 15,
+        "book_dept": "Math"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 41,
+      "fields": {
+        "book_id": "B041",
+        "title": "A Brief History of Time",
+        "author": "Stephen Hawking",
+        "edition": "1st",
+        "publication": "Bantam Books",
+        "isbn": "9780553380163",
+        "number_of_copies_available": 9,
+        "book_dept": "Physics"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 42,
+      "fields": {
+        "book_id": "B042",
+        "title": "The Feynman Lectures on Physics",
+        "author": "Richard P. Feynman",
+        "edition": "1st",
+        "publication": "Addison-Wesley",
+        "isbn": "9780716700690",
+        "number_of_copies_available": 19,
+        "book_dept": "CSE"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 43,
+      "fields": {
+        "book_id": "B043",
+        "title": "The Elegant Universe",
+        "author": "Brian Greene",
+        "edition": "1st",
+        "publication": "W. W. Norton & Company",
+        "isbn": "9780393338102",
+        "number_of_copies_available": 14,
+        "book_dept": "English"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 44,
+      "fields": {
+        "book_id": "B044",
+        "title": "Surely You're Joking, Mr. Feynman!",
+        "author": "Richard P. Feynman",
+        "edition": "1st",
+        "publication": "W. W. Norton & Company",
+        "isbn": "9780393356182",
+        "number_of_copies_available": 5,
+        "book_dept": "Sociology"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 45,
+      "fields": {
+        "book_id": "B045",
+        "title": "Cosmos",
+        "author": "Carl Sagan",
+        "edition": "1st",
+        "publication": "Random House",
+        "isbn": "9780345331359",
+        "number_of_copies_available": 3,
+        "book_dept": "Economics"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 46,
+      "fields": {
+        "book_id": "B046",
+        "title": "The Fabric of the Cosmos",
+        "author": "Brian Greene",
+        "edition": "1st",
+        "publication": "Bantam Books",
+        "isbn": "9780553804725",
+        "number_of_copies_available": 17,
+        "book_dept": "Chemistry"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 47,
+      "fields": {
+        "book_id": "B047",
+        "title": "Quantum Mechanics: The Theoretical Minimum",
+        "author": "Leonard Susskind, Art Friedman",
+        "edition": "1st",
+        "publication": "Basic Books",
+        "isbn": "9780465036670",
+        "number_of_copies_available": 2,
+        "book_dept": "Biology"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 48,
+      "fields": {
+        "book_id": "B048",
+        "title": "Relativity: The Special and the General Theory",
+        "author": "Albert Einstein",
+        "edition": "1st",
+        "publication": "Penguin Classics",
+        "isbn": "9780140444073",
+        "number_of_copies_available": 5,
+        "book_dept": "Business"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 49,
+      "fields": {
+        "book_id": "B049",
+        "title": "Introduction to Quantum Mechanics",
+        "author": "David J. Griffiths",
+        "edition": "2nd",
+        "publication": "Pearson",
+        "isbn": "9780131118928",
+        "number_of_copies_available": 1,
+        "book_dept": "English"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 50,
+      "fields": {
+        "book_id": "B050",
+        "title": "The Character of Physical Law",
+        "author": "Richard Feynman",
+        "edition": "1st",
+        "publication": "MIT Press",
+        "isbn": "9780262510914",
+        "number_of_copies_available": 12,
+        "book_dept": "Art"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 51,
+      "fields": {
+        "book_id": "B051",
+        "title": "Principles of Mathematical Analysis",
+        "author": "Walter Rudin",
+        "edition": "3rd",
+        "publication": "McGraw-Hill",
+        "isbn": "9780070542358",
+        "number_of_copies_available": 6,
+        "book_dept": "Math"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 52,
+      "fields": {
+        "book_id": "B052",
+        "title": "Linear Algebra Done Right",
+        "author": "Sheldon Axler",
+        "edition": "3rd",
+        "publication": "Springer",
+        "isbn": "9783319110790",
+        "number_of_copies_available": 4,
+        "book_dept": "Biology"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 53,
+      "fields": {
+        "book_id": "B053",
+        "title": "Introduction to Probability",
+        "author": "Joseph K. Blitzstein, Jessica Hwang",
+        "edition": "2nd",
+        "publication": "Chapman & Hall/CRC",
+        "isbn": "9781466575578",
+        "number_of_copies_available": 18,
+        "book_dept": "Business"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 54,
+      "fields": {
+        "book_id": "B054",
+        "title": "Calculus",
+        "author": "Michael Spivak",
+        "edition": "4th",
+        "publication": "Publish or Perish",
+        "isbn": "9780914098918",
+        "number_of_copies_available": 8,
+        "book_dept": "Economics"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 55,
+      "fields": {
+        "book_id": "B055",
+        "title": "A First Course in Abstract Algebra",
+        "author": "John B. Fraleigh",
+        "edition": "7th",
+        "publication": "Addison-Wesley",
+        "isbn": "9780321803401",
+        "number_of_copies_available": 10,
+        "book_dept": "Physics"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 56,
+      "fields": {
+        "book_id": "B056",
+        "title": "Discrete Mathematics and Its Applications",
+        "author": "Kenneth H. Rosen",
+        "edition": "7th",
+        "publication": "McGraw-Hill",
+        "isbn": "9780073383095",
+        "number_of_copies_available": 13,
+        "book_dept": "Chemistry"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 57,
+      "fields": {
+        "book_id": "B057",
+        "title": "Concrete Mathematics",
+        "author": "Ronald L. Graham, Donald E. Knuth, Oren Patashnik",
+        "edition": "2nd",
+        "publication": "Addison-Wesley",
+        "isbn": "9780201558029",
+        "number_of_copies_available": 11,
+        "book_dept": "History"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 58,
+      "fields": {
+        "book_id": "B058",
+        "title": "Topology",
+        "author": "James R. Munkres",
+        "edition": "2nd",
+        "publication": "Prentice Hall",
+        "isbn": "9780134689517",
+        "number_of_copies_available": 2,
+        "book_dept": "CSE"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 59,
+      "fields": {
+        "book_id": "B059",
+        "title": "An Introduction to the Theory of Numbers",
+        "author": "G.H. Hardy, E.M. Wright",
+        "edition": "6th",
+        "publication": "Oxford University Press",
+        "isbn": "9780199219865",
+        "number_of_copies_available": 9,
+        "book_dept": "Art"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 60,
+      "fields": {
+        "book_id": "B060",
+        "title": "Algebra",
+        "author": "Michael Artin",
+        "edition": "2nd",
+        "publication": "Pearson",
+        "isbn": "9780132413770",
+        "number_of_copies_available": 5,
+        "book_dept": "Biology"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 61,
+      "fields": {
+        "book_id": "B061",
+        "title": "Real Analysis",
+        "author": "H.L. Royden",
+        "edition": "3rd",
+        "publication": "Macmillan",
+        "isbn": "9780070542341",
+        "number_of_copies_available": 1,
+        "book_dept": "English"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 62,
+      "fields": {
+        "book_id": "B062",
+        "title": "Mathematical Methods for Physics and Engineering",
+        "author": "K.F. Riley, M.P. Hobson, S.J. Bence",
+        "edition": "3rd",
+        "publication": "Cambridge University Press",
+        "isbn": "9780521679718",
+        "number_of_copies_available": 15,
+        "book_dept": "Physics"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 63,
+      "fields": {
+        "book_id": "B063",
+        "title": "Introduction to Graph Theory",
+        "author": "Douglas B. West",
+        "edition": "2nd",
+        "publication": "Prentice Hall",
+        "isbn": "9780130144003",
+        "number_of_copies_available": 14,
+        "book_dept": "Math"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 64,
+      "fields": {
+        "book_id": "B064",
+        "title": "How to Prove It",
+        "author": "Daniel J. Velleman",
+        "edition": "2nd",
+        "publication": "Cambridge University Press",
+        "isbn": "9780521675994",
+        "number_of_copies_available": 19,
+        "book_dept": "Business"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 65,
+      "fields": {
+        "book_id": "B065",
+        "title": "Complex Analysis",
+        "author": "Elias M. Stein, Rami Shakarchi",
+        "edition": "1st",
+        "publication": "Princeton University Press",
+        "isbn": "9780691113852",
+        "number_of_copies_available": 2,
+        "book_dept": "Economics"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 66,
+      "fields": {
+        "book_id": "B066",
+        "title": "Calculus, Vol. 1: One-Variable Calculus, with an Introduction to Linear Algebra",
+        "author": "Tom M. Apostol",
+        "edition": "2nd",
+        "publication": "Wiley",
+        "isbn": "9780471000070",
+        "number_of_copies_available": 10,
+        "book_dept": "History"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 67,
+      "fields": {
+        "book_id": "B067",
+        "title": "Probability and Random Processes",
+        "author": "Geoffrey Grimmett, David Stirzaker",
+        "edition": "3rd",
+        "publication": "Oxford University Press",
+        "isbn": "9780198572229",
+        "number_of_copies_available": 17,
+        "book_dept": "Chemistry"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 68,
+      "fields": {
+        "book_id": "B068",
+        "title": "Introduction to Mathematical Thinking",
+        "author": "Keith Devlin",
+        "edition": "1st",
+        "publication": "Cambridge University Press",
+        "isbn": "9781101900540",
+        "number_of_copies_available": 8,
+        "book_dept": "Biology"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 69,
+      "fields": {
+        "book_id": "B069",
+        "title": "An Introduction to Manifolds",
+        "author": "Loring W. Tu",
+        "edition": "2nd",
+        "publication": "Springer",
+        "isbn": "9781447157982",
+        "number_of_copies_available": 5,
+        "book_dept": "Art"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 70,
+      "fields": {
+        "book_id": "B070",
+        "title": "Mathematics: Its Content, Methods, and Meaning",
+        "author": "A.D. Aleksandrov, A.N. Kolmogorov, M.A. Lavrent’ev",
+        "edition": "2nd",
+        "publication": "Dover Publications",
+        "isbn": "9780486477906",
+        "number_of_copies_available": 6,
+        "book_dept": "Math"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 71,
+      "fields": {
+        "book_id": "B071",
+        "title": "Pride and Prejudice",
+        "author": "Jane Austen",
+        "edition": "1st",
+        "publication": "T. Egerton",
+        "isbn": "9780141439518",
+        "number_of_copies_available": 2,
+        "book_dept": "Sociology"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 72,
+      "fields": {
+        "book_id": "B072",
+        "title": "1984",
+        "author": "George Orwell",
+        "edition": "1st",
+        "publication": "Secker & Warburg",
+        "isbn": "9780451524935",
+        "number_of_copies_available": 9,
+        "book_dept": "CSE"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 73,
+      "fields": {
+        "book_id": "B073",
+        "title": "To Kill a Mockingbird",
+        "author": "Harper Lee",
+        "edition": "1st",
+        "publication": "J.B. Lippincott & Co.",
+        "isbn": "9780060935467",
+        "number_of_copies_available": 19,
+        "book_dept": "Physics"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 74,
+      "fields": {
+        "book_id": "B074",
+        "title": "The Great Gatsby",
+        "author": "F. Scott Fitzgerald",
+        "edition": "1st",
+        "publication": "Charles Scribner's Sons",
+        "isbn": "9780743273565",
+        "number_of_copies_available": 15,
+        "book_dept": "Business"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 75,
+      "fields": {
+        "book_id": "B075",
+        "title": "Moby-Dick",
+        "author": "Herman Melville",
+        "edition": "1st",
+        "publication": "Harper & Brothers",
+        "isbn": "9780142437247",
+        "number_of_copies_available": 3,
+        "book_dept": "Economics"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 76,
+      "fields": {
+        "book_id": "B076",
+        "title": "Wuthering Heights",
+        "author": "Emily Brontë",
+        "edition": "1st",
+        "publication": "Thomas Cautley Newby",
+        "isbn": "9780141439556",
+        "number_of_copies_available": 11,
+        "book_dept": "Biology"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 77,
+      "fields": {
+        "book_id": "B077",
+        "title": "Jane Eyre",
+        "author": "Charlotte Brontë",
+        "edition": "1st",
+        "publication": "Smith, Elder & Co.",
+        "isbn": "9780141441146",
+        "number_of_copies_available": 4,
+        "book_dept": "Art"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 78,
+      "fields": {
+        "book_id": "B078",
+        "title": "The Catcher in the Rye",
+        "author": "J.D. Salinger",
+        "edition": "1st",
+        "publication": "Little, Brown and Company",
+        "isbn": "9780316769488",
+        "number_of_copies_available": 18,
+        "book_dept": "EEE"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 79,
+      "fields": {
+        "book_id": "B079",
+        "title": "Great Expectations",
+        "author": "Charles Dickens",
+        "edition": "1st",
+        "publication": "Chapman & Hall",
+        "isbn": "9780141439563",
+        "number_of_copies_available": 14,
+        "book_dept": "Math"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 80,
+      "fields": {
+        "book_id": "B080",
+        "title": "Animal Farm",
+        "author": "George Orwell",
+        "edition": "1st",
+        "publication": "Secker & Warburg",
+        "isbn": "9780451526342",
+        "number_of_copies_available": 6,
+        "book_dept": "Sociology"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 81,
+      "fields": {
+        "book_id": "B081",
+        "title": "Brave New World",
+        "author": "Aldous Huxley",
+        "edition": "1st",
+        "publication": "Chatto & Windus",
+        "isbn": "9780060850524",
+        "number_of_copies_available": 2,
+        "book_dept": "History"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 82,
+      "fields": {
+        "book_id": "B082",
+        "title": "The Odyssey",
+        "author": "Homer",
+        "edition": "Translated by Robert Fagles",
+        "publication": "Penguin Classics",
+        "isbn": "9780140268867",
+        "number_of_copies_available": 20,
+        "book_dept": "Chemistry"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 83,
+      "fields": {
+        "book_id": "B083",
+        "title": "Hamlet",
+        "author": "William Shakespeare",
+        "edition": "1st",
+        "publication": "Arden Shakespeare",
+        "isbn": "9780198328702",
+        "number_of_copies_available": 8,
+        "book_dept": "CSE"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 84,
+      "fields": {
+        "book_id": "B084",
+        "title": "Macbeth",
+        "author": "William Shakespeare",
+        "edition": "1st",
+        "publication": "Arden Shakespeare",
+        "isbn": "9780198328342",
+        "number_of_copies_available": 5,
+        "book_dept": "Physics"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 85,
+      "fields": {
+        "book_id": "B085",
+        "title": "The Lord of the Rings",
+        "author": "J.R.R. Tolkien",
+        "edition": "1st",
+        "publication": "Allen & Unwin",
+        "isbn": "9780261102385",
+        "number_of_copies_available": 1,
+        "book_dept": "Economics"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 86,
+      "fields": {
+        "book_id": "B086",
+        "title": "The Hobbit",
+        "author": "J.R.R. Tolkien",
+        "edition": "1st",
+        "publication": "Allen & Unwin",
+        "isbn": "9780261102217",
+        "number_of_copies_available": 11,
+        "book_dept": "Business"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 87,
+      "fields": {
+        "book_id": "B087",
+        "title": "Frankenstein",
+        "author": "Mary Shelley",
+        "edition": "1st",
+        "publication": "Lackington, Hughes, Harding, Mavor & Jones",
+        "isbn": "9780141439471",
+        "number_of_copies_available": 9,
+        "book_dept": "Biology"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 88,
+      "fields": {
+        "book_id": "B088",
+        "title": "Dracula",
+        "author": "Bram Stoker",
+        "edition": "1st",
+        "publication": "Archibald Constable and Company",
+        "isbn": "9780141439846",
+        "number_of_copies_available": 19,
+        "book_dept": "Chemistry"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 89,
+      "fields": {
+        "book_id": "B089",
+        "title": "The Divine Comedy",
+        "author": "Dante Alighieri",
+        "edition": "Translated by Allen Mandelbaum",
+        "publication": "Bantam Classics",
+        "isbn": "9780553213393",
+        "number_of_copies_available": 12,
+        "book_dept": "English"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 90,
+      "fields": {
+        "book_id": "B090",
+        "title": "A Tale of Two Cities",
+        "author": "Charles Dickens",
+        "edition": "1st",
+        "publication": "Chapman & Hall",
+        "isbn": "9780141439600",
+        "number_of_copies_available": 7,
+        "book_dept": "Sociology"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 91,
+      "fields": {
+        "book_id": "B091",
+        "title": "Introduction to Algorithms",
+        "author": "Thomas H. Cormen, et al.",
+        "edition": "3rd",
+        "publication": "MIT Press",
+        "isbn": "9780262033849",
+        "number_of_copies_available": 3,
+        "book_dept": "Economics"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 92,
+      "fields": {
+        "book_id": "B092",
+        "title": "Clean Code",
+        "author": "Robert C. Martin",
+        "edition": "1st",
+        "publication": "Prentice Hall",
+        "isbn": "9780132350885",
+        "number_of_copies_available": 16,
+        "book_dept": "EEE"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 93,
+      "fields": {
+        "book_id": "B093",
+        "title": "Design Patterns",
+        "author": "Erich Gamma, et al.",
+        "edition": "1st",
+        "publication": "Addison-Wesley",
+        "isbn": "9780201633611",
+        "number_of_copies_available": 2,
+        "book_dept": "Business"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 94,
+      "fields": {
+        "book_id": "B094",
+        "title": "Computer Networks",
+        "author": "Andrew S. Tanenbaum",
+        "edition": "5th",
+        "publication": "Pearson",
+        "isbn": "9780132126954",
+        "number_of_copies_available": 14,
+        "book_dept": "English"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 95,
+      "fields": {
+        "book_id": "B095",
+        "title": "Artificial Intelligence: A Modern Approach",
+        "author": "Stuart Russell, Peter Norvig",
+        "edition": "3rd",
+        "publication": "Pearson",
+        "isbn": "9780136042595",
+        "number_of_copies_available": 9,
+        "book_dept": "Biology"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 96,
+      "fields": {
+        "book_id": "B096",
+        "title": "Operating System Concepts",
+        "author": "Abraham Silberschatz, et al.",
+        "edition": "9th",
+        "publication": "Wiley",
+        "isbn": "9781119456340",
+        "number_of_copies_available": 17,
+        "book_dept": "Physics"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 97,
+      "fields": {
+        "book_id": "B097",
+        "title": "Structure and Interpretation of Computer Programs",
+        "author": "Harold Abelson, et al.",
+        "edition": "2nd",
+        "publication": "MIT Press",
+        "isbn": "9780262510876",
+        "number_of_copies_available": 5,
+        "book_dept": "CSE"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 98,
+      "fields": {
+        "book_id": "B098",
+        "title": "The C Programming Language",
+        "author": "Kernighan & Ritchie",
+        "edition": "2nd",
+        "publication": "Prentice Hall",
+        "isbn": "9780131103634",
+        "number_of_copies_available": 1,
+        "book_dept": "Economics"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 99,
+      "fields": {
+        "book_id": "B099",
+        "title": "Data Structures and Algorithms in Python",
+        "author": "Goodrich, et al.",
+        "edition": "1st",
+        "publication": "Wiley",
+        "isbn": "9781118290286",
+        "number_of_copies_available": 11,
+        "book_dept": "Art"
+      }
+    },
+    {
+      "model": "library.book",
+      "pk": 100,
+      "fields": {
+        "book_id": "B100",
+        "title": "Computer Architecture: A Quantitative Approach",
+        "author": "Hennessy & Patterson",
+        "edition": "5th",
+        "publication": "Morgan Kaufmann",
+        "isbn": "9780123838735",
+        "number_of_copies_available": 8,
+        "book_dept": "EEE"
+      }
+    }
+  ]
+  

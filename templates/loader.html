@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Loading...</title>
+
+    </head>
+    <body>
+        <div id="global-loader" style="
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(255,255,255,0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease;
+    ">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden"></span>
+            </div>
+        </div>
+
+        <script>
+            window.addEventListener('load', function () {
+                setTimeout(function () {
+                    const loader = document.getElementById('global-loader');
+                    if (loader) {
+                        loader.style.opacity = '0';
+                        setTimeout(() => loader.style.display = 'none', 200); 
+                    }
+                }, 500); 
+            });
+        </script>
+
+    </body>
+</html>

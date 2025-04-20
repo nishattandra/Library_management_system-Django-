@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Library Management</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css"
+            rel="stylesheet">
+    </head>
+    <body class="bg-light">
+        {% include "loader.html" %}
+
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">Library Management</a>
+            <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/login/">Admin</a>
+                    </li>
+
+                    {% if not user.is_authenticated %}
+                    <!-- If user is not logged in, show Login link -->
+                    <li class="nav-item">
+                        <!-- Use your named URL or direct path for the login page -->
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                    {% else %}
+                    {% if user.is_staff %}
+                    <li class="nav-item">
+                        <!-- Link to staff dashboard for staff users -->
+                        <a class="nav-link"
+                            href="{% url 'staff_dashboard' %}">Staff
+                            Dashboard</a>
+                    </li>
+                    {% endif %}
+                    <!-- Logout link for authenticated users -->
+                    <li class="nav-item">
+                        <a class="nav-link" href=" {% url 'logout' %} ">Logout</a>
+                    </li>
+                    {% endif %}
+
+                    <li class="nav-item">
+                        {% if not user.is_authenticated %}
+                            <!-- If the user is not logged in, redirect to student login -->
+                            <a class="nav-link" href="{% url 'student_login' %}">Student</a>
+                        {% else %}
+                            <!-- If the user is logged in, show a link to the student dashboard or profile -->
+                            <a class="nav-link" href="{% url 'student_dashboard' %}">Student Dashboard</a>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Welcome Section -->
+        <section class="jumbotron text-center mt-5">
+            <div class="container">
+                <h1 class="display-4">Hello, Reader!</h1>
+                <p class="lead">Welcome to the Library Management System.</p>
+            </div>
+        </section>
+
+        <!-- Books -->
+        <div class="container my-5">
+            <h2 class="mb-4">Available Books</h2>
+
+            <div class="row mb-3 align-items-center ">
+                <!-- Left: Department Filter -->
+                <div class="col-auto">
+                    <form method="POST" class="d-flex align-items-center ">
+                        {% csrf_token %}
+                        <label for="dept" class="form-label mb-0 me-2">Filter by
+                            Department:</label>
+                        <select name="dept" id="dept" class="form-select me-2 h-25">
+                            <option value>All Departments</option>
+                            <hr>
+                            {% for dept in departments %}
+                            <option value="{{ dept }}"
+                             {% if selected_dept == dept %}
+                                 selected
+                             {% endif %}>
+                                {{ dept }}
+                            </option>
+                            <hr>
+                            {% endfor %}
+                        </select>
+                        <button type="submit"
+                            class="btn btn-primary">Filter</button>
+                    </form>
+                </div>
+
+                <!-- Right: Search by Title -->
+                <div class="col-auto ms-auto">
+                    <form method="POST" class="d-flex align-items-center">
+                        {% csrf_token %}
+                        <label for="search" class="form-label mb-0 me-2">Search
+                            by Title:</label>
+                        <input type="text" name="search" id="search"
+                            class="form-control me-2"
+                            placeholder="Enter book title"
+                            value="{{ search_text }}">
+                        <button type="submit"
+                            class="btn btn-secondary">Search</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Table of Books -->
+            <table class="table table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Dept.</th>
+                        <th>Copies</th>
+                        <th>Edition</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in page_obj.object_list %}
+                    <tr>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.author }}</td>
+                        <td>{{book.book_dept}}</td>
+                        <td>{{ book.number_of_copies_available }}</td>
+                        <td>{{ book.edition }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Pagination Summary and Controls -->
+            <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0">Showing {{ page_obj.start_index }}–{{page_obj.end_index }} of
+                     {{ page_obj.paginator.count}}
+                </p>
+
+                <div>
+                    <ul class="pagination mb-0">
+                        <!-- Previous Page Form -->
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <form method="POST" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="page"
+                                    value="{{ page_obj.previous_page_number }}">
+                                <button class="page-link" type="submit">&laquo;
+                                    Previous</button>
+                            </form>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">&laquo; Previous</span>
+                        </li>
+                        {% endif %}
+
+                        <!-- Next Page Form -->
+                        {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <form method="POST" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="page"
+                                    value="{{ page_obj.next_page_number }}">
+                                <button class="page-link" type="submit">Next
+                                    &raquo;</button>
+                            </form>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">Next &raquo;</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-dark text-white text-center py-3">
+            <p>&copy; 2025 Library Management System</p>
+        </footer>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script>
+    </body>
+</html>
