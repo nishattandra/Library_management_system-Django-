@@ -14,10 +14,8 @@
         class="row mb-3 d-flex align-items-center justify-content-between mt-4">
         <!-- Left: Department Filter -->
         <div class="col-auto">
-            <form method="GET" class="d-flex align-items-center">
+            <form method="POST" class="d-flex align-items-center">
                 {% csrf_token %}
-                <label for="dept" class="form-label mb-0 mr-2">Filter by
-                    Department:</label>
                 <select name="dept" id="dept" class="form-control me-2">
                     <option value>All Departments</option>
                     {% for dept in departments %}
@@ -32,10 +30,8 @@
 
         <!-- Right: Search by Title -->
         <div class="col-auto ms-auto">
-            <form method="GET" class="d-flex align-items-center">
+            <form method="POST" class="d-flex align-items-center">
                 {% csrf_token %}
-                <label for="search" class="form-label mb-0 me-2">Search by
-                    Title:</label>
                 <input type="text" name="search" id="search"
                     class="form-control mr-2" placeholder="Enter book title"
                     value="{{ search_text }}">

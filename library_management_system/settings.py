@@ -131,8 +131,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Set session expiry to end when the browser is closed
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-# Optional: Set the maximum session length to something short (e.g., 1 minute)
-SESSION_COOKIE_AGE = 600 
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 

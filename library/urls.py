@@ -17,6 +17,7 @@ urlpatterns = [
     path('student/login/', views.student_login, name='student_login'),
     path('student/registration_complete/', views.student_registration_complete, name='student_registration_complete'),
     path('verify_student/<int:student_id>/', views.verify_student, name='verify_student'),
+    
     # Student dashboard and subpages
     path('student/dashboard/', views.student_dashboard, name='student_dashboard'),
     path('student/borrow_books/', views.borrow_books, name='borrow_books'),
@@ -31,6 +32,7 @@ urlpatterns = [
 
     # Staff - offline & issue book
     path('staff/offline_books/', views.staff_offline_books, name='staff_offline_books'),
+    path('staff/all_books/', views.all_books, name='all_books'),
     path('staff/issue_book/<int:book_id>/<int:student_id>/', views.issue_book, name='issue_book'),
     path('staff/return_books/<int:student_id>/', views.return_selected_books, name='return_selected_books'),
     

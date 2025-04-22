@@ -144,7 +144,7 @@ def student_login(request):
             user = authenticate(request, username=form.cleaned_data['username'], password=form.cleaned_data['password'])
             if user is not None:
                 try:
-                    student = user.student  # Try to access the related Student object
+                    student = user.student 
                 except Student.DoesNotExist:
                     messages.error(request, "No student profile associated with this account. Please register.")
                     return redirect('student_register')
@@ -185,21 +185,28 @@ def student_dashboard(request):
     student = request.user.student
     borrowed_books_ids = BorrowedBook.objects.filter(student=student, status='Issued').values_list('book__id', flat=True)
     requested_book_ids = BookRequest.objects.filter(user=request.user, status='REQUESTED').values_list('book__id', flat=True)
-
-    selected_dept = request.GET.get('dept', '')
-    search_text = request.GET.get('search', '')
-    page_number = request.GET.get('page', 1)
-
-    # Fetch book list
-    books_list = Book.objects.all().order_by('pk')
-    if selected_dept:
-        books_list = books_list.filter(book_dept=selected_dept)
-    if search_text:
-        books_list = books_list.filter(title__icontains=search_text)
+    if request.method == 'POST':
+        dept = request.POST.get('dept', '')
+        search_text = request.POST.get('search', '')
+        page = request.POST.get('page', '')
+        request.session['dept'] = dept
+        request.session['search'] = search_text
+        request.session['page'] = page
+        return redirect('student_dashboard')
+    else:
+        selected_dept = request.session.pop('dept', '')
+        search_text = request.session.pop('search', '')
+        page_number = request.session.pop('page', '')
+        books_list = Book.objects.all().order_by('pk')
+        if selected_dept:
+            books_list = books_list.filter(book_dept=selected_dept)
+        if search_text:
+            books_list = books_list.filter(title__icontains=search_text)
+        departments = Book.objects.values_list('book_dept', flat=True).distinct()
 
     # Pagination
     paginator = Paginator(books_list, 10)
-    page_obj = paginator.get_page(page_number)
+    page_obj = paginator.get_page(page_number) if page_number else paginator.get_page(1)
     return render(request, 'student_dashboard/dashboard.html', {
         'student_name': student.name,
         'borrowed_books_ids': list(borrowed_books_ids),
@@ -207,7 +214,7 @@ def student_dashboard(request):
         'page_obj': page_obj,
         'selected_dept': selected_dept,
         'search_text': search_text,
-        'departments': Book.objects.values_list('book_dept', flat=True).distinct(),
+        'departments': departments,
     })
 
 @login_required
@@ -432,5 +439,79 @@ def download_history_pdf(request):
         return HttpResponse('Error generating PDF', status=500)
     return response
     
-    
+
+@user_passes_test(is_staff_user, login_url='login')
+def all_books(request):
+    if request.method == 'POST':
+        dept = request.POST.get('dept', '')
+        search_text = request.POST.get('search', '')
+        page = request.POST.get('page', '')
+        request.session['dept'] = dept
+        request.session['search'] = search_text
+        request.session['page'] = page
+        return redirect('all_books')
+    else:
+        selected_dept = request.session.pop('dept', '')
+        search_text = request.session.pop('search', '')
+        page_number = request.session.pop('page', '')
+        books_list = Book.objects.all().order_by('pk')
+        if selected_dept:
+            books_list = books_list.filter(book_dept=selected_dept)
+        if search_text:
+            books_list = books_list.filter(title__icontains=search_text)
+        departments = Book.objects.values_list('book_dept', flat=True).distinct()
+        paginator = Paginator(books_list, 10)
+        page_obj = paginator.get_page(page_number) if page_number else paginator.get_page(1)
+        return render(request, 'staff_dashboard/all_books.html', {
+            'page_obj': page_obj,
+            'selected_dept': selected_dept,
+            'search_text': search_text,
+            'departments': departments,
+        })
+    selected_dept = request.GET.get('dept', '')
+    search_text = request.GET.get('search', '')
+    page_number = request.GET.get('page', '1')  # Default to first page if no page number
+
+    # On POST request (form submission), store filter values in session
+    if request.method == 'POST':
+        selected_dept = request.POST.get('dept', '')
+        search_text = request.POST.get('search', '')
+        page_number = request.POST.get('page', '1')
+
+        # Store the filter and search values in the session
+        request.session['dept'] = selected_dept
+        request.session['search'] = search_text
+        request.session['page'] = page_number
+
+        return redirect('all_books')  # Redirect to the same page to apply filters
+
+    # On GET request (page load or refresh), retrieve filter values from session
+    selected_dept = request.session.get('dept', '')  # Default to empty if no filter
+    search_text = request.session.get('search', '')  # Default to empty if no search
+    page_number = request.session.get('page', '1')  # Default to first page if no page number
+
+    # Fetch books list and apply department and search filters
+    books_list = Book.objects.all().order_by('book_id')  # Or any other field for ordering
+
+    # Apply department filter if selected
+    if selected_dept:
+        books_list = books_list.filter(book_dept=selected_dept)
+
+    # Apply search filter if text is provided
+    if search_text:
+        books_list = books_list.filter(title__icontains=search_text)
+
+    # Pagination setup
+    paginator = Paginator(books_list, 10)  # Show 10 books per page
+    page_obj = paginator.get_page(page_number)
+
+    # Fetch departments for department filter dropdown
+    departments = Book.objects.values_list('book_dept', flat=True).distinct()
+
+    return render(request, 'staff_dashboard/all_books.html', {
+        'page_obj': page_obj,  # For pagination
+        'selected_dept': selected_dept,  # Retain the selected department
+        'search_text': search_text,  # Retain the search text
+        'departments': departments,  # For department filter options
+    })
     
