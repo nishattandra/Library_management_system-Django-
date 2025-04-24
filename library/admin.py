@@ -12,6 +12,7 @@ class StaffAdmin(admin.ModelAdmin):
     add_form = StaffCreationForm
     list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff')
     search_fields = ('username', 'email')
+admin.site.register(User, StaffAdmin)
     
 class StudentAdmin(admin.ModelAdmin):
     list_display = ('user', 'student_id', 'department', 'session', 'is_verified')
@@ -19,9 +20,15 @@ class StudentAdmin(admin.ModelAdmin):
 
 admin.site.register(Student, StudentAdmin)
 
-admin.site.register(User, StaffAdmin)
 
-admin.site.register(Book)
+
+class BookAdmin(admin.ModelAdmin):
+    list_display = ['title', 'author', 'edition', 'book_dept', 'number_of_copies_available'] 
+    search_fields = ['title', 'author']
+    list_filter = ['book_dept', 'edition'] 
+    
+
+admin.site.register(Book, BookAdmin)
 
 
 

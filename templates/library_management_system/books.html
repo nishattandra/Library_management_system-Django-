@@ -1,0 +1,115 @@
+{% extends "library_management_system/index.html" %}
+
+{% block content %}
+<div class="container-xxl my-5">
+    <h2 class="mb-4 text-center">Available Books</h2>
+
+    <div class="row mb-3 d-flex justify-content-between align-items-center ">
+        <!-- Left: Department Filter -->
+        <div class="col-auto">
+            <form method="POST" class="d-flex align-items-center ">
+                {% csrf_token %}
+                <select name="dept" id="dept" class="form-select me-2 h-25">
+                    <option value>All Departments</option>
+                    <hr>
+                    {% for dept in departments %}
+                    <option value="{{ dept }}"
+                        {% if selected_dept == dept %}
+                        selected
+                        {% endif %}>
+                        {{ dept }}
+                    </option>
+                    <hr>
+                    {% endfor %}
+                </select>
+                <button type="submit"
+                    class="btn btn-primary">Filter</button>
+            </form>
+        </div>
+
+        <!-- Right: Search by Title -->
+        <div class="col-auto ms-auto">
+            <form method="POST" class="d-flex align-items-center">
+                {% csrf_token %}
+                <input type="text" name="search" id="search"
+                    class="form-control me-2"
+                    placeholder="Enter book title"
+                    value="{{ search_text }}">
+                <button type="submit"
+                    class="btn btn-secondary">Search</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Table of Books -->
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Dept.</th>
+                <th>Copies</th>
+                <th>Edition</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in page_obj.object_list %}
+            <tr>
+                <td>{{ book.title }}</td>
+                <td>{{ book.author }}</td>
+                <td>{{book.book_dept}}</td>
+                <td>{{ book.number_of_copies_available }}</td>
+                <td>{{ book.edition }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Pagination Summary and Controls -->
+    <div class="d-flex justify-content-between align-items-center">
+        <p class="mb-0">
+            Showing {{ page_obj.start_index }}–{{page_obj.end_index}} of
+            {{ page_obj.paginator.count}}
+        </p>
+
+        <div>
+            <ul class="pagination mb-0">
+                <!-- Previous Page Form -->
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <form method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="page"
+                            value="{{ page_obj.previous_page_number }}">
+                        <button class="page-link" type="submit">&laquo;
+                            Previous</button>
+                    </form>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo; Previous</span>
+                </li>
+                {% endif %}
+
+                <!-- Next Page Form -->
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <form method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="page"
+                            value="{{ page_obj.next_page_number }}">
+                        <button class="page-link" type="submit">Next
+                            &raquo;</button>
+                    </form>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Next &raquo;</span>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

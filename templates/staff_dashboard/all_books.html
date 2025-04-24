@@ -4,9 +4,103 @@
 {% block title %}All books{% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    <h2 class="mb-4">Available Books</h2>
+<style>
+    .modal-backdrop {
+        z-index: 1040 !important;
+    }
+    .modal {
+        z-index: 1050 !important;
+    }
+</style>
 
+<div class="container my-5">
+   <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-4">Available Books</h2>
+        <button type="button" class="btn btn-success"  data-bs-toggle="modal" data-bs-target="#addBookModal">
+            <i class="bi bi-plus"></i> Add New Book
+        </button>
+   </div>
+
+  <!-- Add Book Modal -->
+<div class="modal fade" id="addBookModal" tabindex="-1" aria-labelledby="addBookModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addBookModalLabel">Add New Book</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Form to Add a Book -->
+                <form method="POST" action="{% url 'add_book' %}">
+                    {% csrf_token %}
+                    <!-- Display Validation Errors -->
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <ul>
+                                {% for field, errors in form.errors.items %}
+                                    {% for error in errors %}
+                                        <li><strong>{{ field|capfirst }}</strong>: {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                    <!-- Book ID -->
+                    <div class="mb-3">
+                        <label for="id_book_id" class="form-label">Book ID</label>
+                        <input type="text" name="book_id" id="id_book_id" class="form-control" required>
+                    </div>
+
+                    <!-- Title -->
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" name="title" id="title" class="form-control" required>
+                    </div>
+
+                    <!-- Author -->
+                    <div class="mb-3">
+                        <label for="author" class="form-label">Author</label>
+                        <input type="text" name="author" id="author" class="form-control" required>
+                    </div>
+
+                    <!-- Book Department -->
+                    <div class="mb-3">
+                        <label for="book_dept" class="form-label">Book Department</label>
+                        <input type="text" name="book_dept" id="book_dept" class="form-control">
+                    </div>
+
+                    <!-- Edition -->
+                    <div class="mb-3">
+                        <label for="edition" class="form-label">Edition</label>
+                        <input type="text" name="edition" id="edition" class="form-control">
+                    </div>
+
+                    <!-- Number of Copies Available -->
+                    <div class="mb-3">
+                        <label for="number_of_copies_available" class="form-label">Number of Copies Available</label>
+                        <input type="number" name="number_of_copies_available" id="number_of_copies_available" class="form-control" min="0" required>
+                    </div>
+
+                    <!-- ISBN -->
+                    <div class="mb-3">
+                        <label for="isbn" class="form-label">ISBN</label>
+                        <input type="text" name="isbn" id="isbn" class="form-control" required>
+                    </div>
+
+                    <!-- Publication -->
+                    <div class="mb-3">
+                        <label for="publication" class="form-label">Publication</label>
+                        <input type="text" name="publication" id="publication" class="form-control">
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary">Save Book</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
     <!-- Filter and Search Form -->
     <div class="row mb-3 align-items-center">
         <!-- Department Filter -->
@@ -45,6 +139,7 @@
                 <th>Dept.</th>
                 <th>Copies</th>
                 <th>Edition</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -55,10 +150,23 @@
                 <td>{{ book.book_dept }}</td>
                 <td>{{ book.number_of_copies_available }}</td>
                 <td>{{ book.edition }}</td>
+                <td>
+                    <a href="#" class="text-primary" title="Edit" 
+                    onclick="openEditModal({{ book.id|escapejs }});">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                    <a href="#" class="text-danger" title="Delete" 
+   
+                        onclick="showDeleteModal('{{ book.title|escapejs }}', 
+                        '{% url 'delete_book' book.id %}');">
+                            <i class="bi bi-trash"></i>
+                    </a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
 
     <!-- Pagination Summary and Controls -->
     <div class="d-flex justify-content-between align-items-center">
@@ -99,4 +207,169 @@
         </div>
     </div>
 </div>
+
+
+<!-- Edit Book Modal -->
+<div class="modal fade" id="editBookModal" tabindex="-1" aria-labelledby="editBookModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editBookModalLabel">Edit Book</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST"  id="editBookForm" >
+                    <p>{{ book.id }}</p>
+                    {% csrf_token %}
+                    <input type="hidden" name="book_id" id="book_id" value="{{ book.id }}">
+
+                    <!-- Title -->
+                    <div class="mb-3">
+                        <label for="id_title" class="form-label">Title</label>
+                        <input type="text" name="title" id="id_title" class="form-control" required>
+                    </div>
+
+                    <!-- Author -->
+                    <div class="mb-3">
+                        <label for="id_author" class="form-label">Author</label>
+                        <input type="text" name="author" id="id_author" class="form-control" required>
+                    </div>
+
+                    <!-- Edition -->
+                    <div class="mb-3">
+                        <label for="id_edition" class="form-label">Edition</label>
+                        <input type="text" name="edition" id="id_edition" class="form-control">
+                    </div>
+
+                    <!-- ISBN -->
+                    <div class="mb-3">
+                        <label for="id_isbn" class="form-label">ISBN</label>
+                        <input type="text" name="isbn" id="id_isbn" class="form-control">
+                    </div>
+
+                    <!-- Number of Copies Available -->
+                    <div class="mb-3">
+                        <label for="id_number_of_copies_available" class="form-label">Number of Copies Available</label>
+                        <input type="number" name="number_of_copies_available" id="id_number_of_copies_available" class="form-control" min="0" required>
+                    </div>
+
+                    <!-- Book Department -->
+                    <div class="mb-3">
+                        <label for="id_book_dept" class="form-label">Book Department</label>
+                        <input type="text" name="book_dept" id="id_book_dept" class="form-control">
+                    </div>
+
+                    <!-- Publication -->
+                    <div class="mb-3">
+                        <label for="id_publication" class="form-label">Publication</label>
+                        <input type="text" name="publication" id="id_publication" class="form-control">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    function openEditModal(bookId) {
+    // Make an AJAX request to get the book data
+    console.log(`/staff/books/${bookId}/edit/`);
+    fetch(`/staff/books/${bookId}/edit/`)
+        .then(response => response.json())
+        .then(data => {
+            // Check if the data is correctly fetched
+            console.log(data.title);  // Verify the data is correct in the console
+            
+            // Populate the modal fields with the book data
+            document.getElementById('id_title').value = data.title;
+            document.getElementById('id_author').value = data.author;
+            document.getElementById('id_edition').value = data.edition;
+            document.getElementById('id_isbn').value = data.isbn;
+            document.getElementById('id_number_of_copies_available').value = data.number_of_copies_available;
+            document.getElementById('id_book_dept').value = data.book_dept;
+            document.getElementById('id_publication').value = data.publication;
+
+            // Set the hidden book ID field
+            document.getElementById('book_id').value = data.id;
+
+            // Show the modal
+            var editModal = new bootstrap.Modal(document.getElementById('editBookModal'));
+            editModal.show();
+
+            // Add the event listener to the form
+            document.getElementById('editBookForm').addEventListener('submit', function(event) {
+                event.preventDefault();  // Prevent the default form submission
+                
+                // Create the FormData object to send data as POST
+                let formData = new FormData(this);
+                
+                // Send the form data via AJAX
+                fetch(`/staff/books/${bookId}/edit/`, {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response (success/failure)
+                    if (data.success) {
+                        alert("Book updated successfully!");
+                        // You can add additional actions here like closing the modal, refreshing the page, etc.
+                        location.reload();
+                    } else {
+                        alert("An error occurred.");
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        })
+        .catch(error => console.error('Error fetching book data:', error));
+}
+
+
+</script>
+
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the book "<span id="bookTitle"></span>"?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="#" id="confirmDeleteButton" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function showDeleteModal(bookTitle, deleteUrl) {
+        // Set the book title in the modal
+        document.getElementById('bookTitle').textContent = bookTitle;
+
+        // Set the delete URL for the confirmation button
+        document.getElementById('confirmDeleteButton').setAttribute('href', deleteUrl);
+
+        // Show the modal
+        var deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
+        deleteModal.show();
+    }
+</script>
+{% if form.errors %}
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+    var addBookModal = new bootstrap.Modal(document.getElementById('addBookModal'));
+    addBookModal.show();
+});
+</script>
+{% endif %}
 {% endblock %}

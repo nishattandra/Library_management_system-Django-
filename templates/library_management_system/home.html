@@ -1,0 +1,98 @@
+{% extends "library_management_system/index.html" %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+        section {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f1eaef;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo div {
+            width: 40px;
+            height: 40px;
+            background-color: #9e7b91;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .logo span {
+            font-size: 20px;
+            font-weight: bold;
+            color: #4a4a8c;
+        }
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #4a4a8c;
+            font-weight: bold;
+        }
+        .sign-up {
+            background-color: #ff6ec7;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 50px;
+        }
+        .hero-text {
+            max-width: 50%;
+        }
+        .hero-text h1 {
+            font-size: 48px;
+            color: #4a4a8c;
+        }
+        .hero-text p {
+            color: #3f3a3a;
+            margin: 20px 0;
+        }
+        .register-btn, .register-btn a {
+            text-decoration: none;
+            background-color: #4f454a;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .hero-image {
+            max-width: 50%;
+        }
+        .hero-image img {
+            width: 100%;
+        }
+    </style>
+
+<section class="hero">
+    <div class="hero-text">
+        <h1>ONLINE LIBRARY</h1>
+        <p>Welcome to the Online Library Management System, your one-stop solution for managing books, users, and transactions efficiently. Explore our collection and streamline your library experience.</p>
+        <button class="register-btn">
+            <a href="{% url 'books_home' %}">
+                VIEW BOOKS <i class="bi bi-arrow-right"></i>
+            </a>
+        </button></a></button>
+    </div>
+    <div class="hero-image"></div>
+    <img class="w-50" src="../../media/project_images/library-removebg-preview.png" alt="Library Illustration">
+</section>
+{% endblock %}

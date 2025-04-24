@@ -11,8 +11,9 @@ from django.db import IntegrityError
 from django.utils import timezone
 from datetime import timedelta
 from datetime import date
+from django.http import JsonResponse
 
-from .forms import StudentRegistrationForm
+from .forms import StudentRegistrationForm, BookForm
 from .models import Book, Student, BookRequest, BorrowedBook
 from django.http import HttpResponse
 from django.template.loader import get_template
@@ -20,10 +21,14 @@ from xhtml2pdf import pisa
 from .models import BorrowedBook, Student
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+from django.db.models.functions import TruncMonth
+from django.db.models import Count
 
 # --- General Views ---
-
 def home(request):
+    return render(request, 'library_management_system/home.html')
+
+def books_home(request):
     if request.user.is_authenticated and request.user.is_staff:
         logout(request)
 
@@ -34,7 +39,7 @@ def home(request):
         request.session['dept'] = dept
         request.session['search'] = search_text
         request.session['page'] = page
-        return redirect('home')
+        return redirect('books_home')
     else:
         selected_dept = request.session.pop('dept', '')
         search_text = request.session.pop('search', '')
@@ -47,7 +52,7 @@ def home(request):
         departments = Book.objects.values_list('book_dept', flat=True).distinct()
         paginator = Paginator(books_list, 10)
         page_obj = paginator.get_page(page_number) if page_number else paginator.get_page(1)
-        return render(request, 'library_management_system/index.html', {
+        return render(request, 'library_management_system/books.html', {
             'page_obj': page_obj,
             'selected_dept': selected_dept,
             'search_text': search_text,
@@ -373,8 +378,38 @@ def issue_book(request, book_id, student_id):
 @login_required
 @user_passes_test(is_staff_user, login_url='login')
 def staff_dashboard(request):
-    full_name = request.user.get_full_name()
-    return render(request, 'staff_dashboard/staff_dashboard.html', {'staff_name': full_name})
+    full_name = request.user.first_name + " " + request.user.last_name if request.user.first_name and request.user.last_name else request.user.username
+    if request.user.first_name and request.user.last_name:
+        full_name = request.user.first_name + " " + request.user.last_name
+    else:
+        full_name = request.user.username
+    print("Staff name:", full_name)
+    total_students = Student.objects.count()
+    total_books = Book.objects.count()
+    requested_books = BookRequest.objects.filter(status='requested').count()
+    current_year = timezone.now().year
+
+    # Query to get books issued per month
+    issued_books_data = (
+        BorrowedBook.objects.filter(issue_date__year=current_year)
+        .annotate(month=TruncMonth('issue_date'))
+        .values('month')
+        .annotate(count=Count('id'))
+        .order_by('month')
+    )
+
+    all_months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    books_issued_dict = {entry['month'].strftime('%B'): entry['count'] for entry in issued_books_data}
+    books_issued_data = [books_issued_dict.get(month, 0) for month in all_months]
+
+    return render(request, 'staff_dashboard/staff_dashboard.html', {
+        'total_students': total_students,
+        'total_books': total_books,
+        'requested_books': requested_books,
+        'staff_name': full_name,
+        'months': all_months,
+        'books_issued': books_issued_data,
+    })
 
 
 @login_required(login_url='student_login')
@@ -468,50 +503,73 @@ def all_books(request):
             'search_text': search_text,
             'departments': departments,
         })
-    selected_dept = request.GET.get('dept', '')
-    search_text = request.GET.get('search', '')
-    page_number = request.GET.get('page', '1')  # Default to first page if no page number
-
-    # On POST request (form submission), store filter values in session
-    if request.method == 'POST':
-        selected_dept = request.POST.get('dept', '')
-        search_text = request.POST.get('search', '')
-        page_number = request.POST.get('page', '1')
-
-        # Store the filter and search values in the session
-        request.session['dept'] = selected_dept
-        request.session['search'] = search_text
-        request.session['page'] = page_number
-
-        return redirect('all_books')  # Redirect to the same page to apply filters
-
-    # On GET request (page load or refresh), retrieve filter values from session
-    selected_dept = request.session.get('dept', '')  # Default to empty if no filter
-    search_text = request.session.get('search', '')  # Default to empty if no search
-    page_number = request.session.get('page', '1')  # Default to first page if no page number
-
-    # Fetch books list and apply department and search filters
-    books_list = Book.objects.all().order_by('book_id')  # Or any other field for ordering
-
-    # Apply department filter if selected
-    if selected_dept:
-        books_list = books_list.filter(book_dept=selected_dept)
-
-    # Apply search filter if text is provided
-    if search_text:
-        books_list = books_list.filter(title__icontains=search_text)
-
-    # Pagination setup
-    paginator = Paginator(books_list, 10)  # Show 10 books per page
-    page_obj = paginator.get_page(page_number)
-
-    # Fetch departments for department filter dropdown
-    departments = Book.objects.values_list('book_dept', flat=True).distinct()
-
-    return render(request, 'staff_dashboard/all_books.html', {
-        'page_obj': page_obj,  # For pagination
-        'selected_dept': selected_dept,  # Retain the selected department
-        'search_text': search_text,  # Retain the search text
-        'departments': departments,  # For department filter options
-    })
     
+    
+#Add new books
+@user_passes_test(is_staff_user, login_url='login')  # Only allow staff to add books
+def add_book(request):
+    if request.method == 'POST':
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()  # Save the book to the database
+            messages.success(request, "Book added successfully.")  # Show success message
+            return redirect('all_books')  # Redirect to all books page after saving the book
+    else:
+        form = BookForm()
+    
+    return render(request, 'staff_dashboard/all_books.html', {'form': form})
+
+
+
+# Edit Book
+@user_passes_test(is_staff_user, login_url='login')  # Only staff can edit
+def edit_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    if request.method == 'POST':
+        # Handle the form submission to save the updated book details
+        book.title = request.POST.get('title', book.title)
+        book.author = request.POST.get('author', book.author)
+        book.edition = request.POST.get('edition', book.edition)
+        book.isbn = request.POST.get('isbn', book.isbn)
+        book.number_of_copies_available = int(request.POST.get('number_of_copies_available', book.number_of_copies_available))
+        book.book_dept = request.POST.get('book_dept', book.book_dept)
+        book.publication = request.POST.get('publication', book.publication)
+
+        # Save the book object
+        book.save()
+        print("Book updated:", book.title)
+        
+        # Return a JSON response indicating success
+        return JsonResponse({'success': True, 'message': 'Book details updated successfully.'})
+    
+    # For GET method, return the book data as JSON for modal
+    elif request.method == 'GET':
+        return JsonResponse({
+            'id': book.id,
+            'title': book.title,
+            'author': book.author,
+            'edition': book.edition,
+            'isbn': book.isbn,
+            'number_of_copies_available': book.number_of_copies_available,
+            'book_dept': book.book_dept,
+            'publication': book.publication,
+        })
+    else:
+        return redirect('all_books')
+
+
+
+#delete books
+@user_passes_test(is_staff_user, login_url='login')  # Only allow staff to delete books
+def delete_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id)  # Get the book or return 404 if not found
+    book.delete()  # Delete the book from the database
+    messages.success(request, f"Book '{book.title}' has been deleted successfully.")  # Add success message
+    return redirect('all_books')  # Redirect to the all_books page
+
+def staff_profile(request):
+    staff = request.user
+    context = {
+        'staff': staff
+    }
+    return render(request, 'staff_dashboard/staff_profile.html', context)

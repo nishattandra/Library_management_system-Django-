@@ -5,4 +5,75 @@
 
 {% block content %}
 <h1 class="mb-4">Welcome, {{ staff_name }}!</h1>
+<div class="dashboard">
+    <div class="row">
+        <!-- Card for Number of Students -->
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">Total Students</div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ total_students }}</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">Total Books</div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ total_books }}</h5>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card for Requested Books -->
+        <div class="col-md-4">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-header">Requested Books</div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ requested_books }}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">Books Issued Per Month</div>
+                <div class="card-body">
+                    <canvas id="booksChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('booksChart').getContext('2d');
+    const booksChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ months | safe }},
+            datasets: [{
+                label: 'Books Issued',
+                data: {{ books_issued | safe }},
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script></div>
 {% endblock %}

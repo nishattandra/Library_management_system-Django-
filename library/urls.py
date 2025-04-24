@@ -8,6 +8,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
+    path('library_management_system/books/', views.books_home, name='books_home'),
 
     # Staff dashboard
     path('staff/dashboard/', views.staff_dashboard, name='staff_dashboard'),
@@ -35,7 +36,11 @@ urlpatterns = [
     path('staff/all_books/', views.all_books, name='all_books'),
     path('staff/issue_book/<int:book_id>/<int:student_id>/', views.issue_book, name='issue_book'),
     path('staff/return_books/<int:student_id>/', views.return_selected_books, name='return_selected_books'),
-    
+    path('staff/add_book/', views.add_book, name='add_book'),
+    path('staff/books/<int:book_id>/edit/', views.edit_book, name='edit_book'),
+    path('staff/books/<int:book_id>/delete/', views.delete_book, name='delete_book'),
+    path('staff/staff_dashboard/', views.staff_dashboard, name='staff_dashboard'),
+    path('staff/staff_profile/', views.staff_profile, name='staff_profile'),
     #Download history
     path('student/download_history/', views.download_history_pdf, name='download_history'),
 ]
