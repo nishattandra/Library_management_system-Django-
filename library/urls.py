@@ -13,7 +13,7 @@ urlpatterns = [
     # Staff dashboard
     path('staff/dashboard/', views.staff_dashboard, name='staff_dashboard'),
 
-    # Student registration and login
+    # Student staff registration and login
     path('student/register/', views.student_register, name='student_register'),
     path('student/login/', views.student_login, name='student_login'),
     path('student/registration_complete/', views.student_registration_complete, name='student_registration_complete'),

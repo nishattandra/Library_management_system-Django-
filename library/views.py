@@ -12,9 +12,10 @@ from django.utils import timezone
 from datetime import timedelta
 from datetime import date
 from django.http import JsonResponse
+import json
 
 from .forms import StudentRegistrationForm, BookForm
-from .models import Book, Student, BookRequest, BorrowedBook
+from .models import Book, LibraryPolicy, Student, BookRequest, BorrowedBook
 from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
@@ -177,7 +178,7 @@ def verify_student(request, student_id):
     send_mail(
         'Account Verified',
         'Congratulations! Your student account has been verified. You can now log in.',
-        'admin123@gmail.com', 
+        'nishattandra2001@gmail.com', 
         [student.user.email],
         fail_silently=False,
     )
@@ -190,6 +191,10 @@ def student_dashboard(request):
     student = request.user.student
     borrowed_books_ids = BorrowedBook.objects.filter(student=student, status='Issued').values_list('book__id', flat=True)
     requested_book_ids = BookRequest.objects.filter(user=request.user, status='REQUESTED').values_list('book__id', flat=True)
+    policy = LibraryPolicy.objects.first()
+    max_books = policy.max_books_per_student if policy else 3
+    current_count = BorrowedBook.objects.filter(student=request.user.student, status='Issued').count() \
+                    + BookRequest.objects.filter(user=request.user, status='REQUESTED').count()
     if request.method == 'POST':
         dept = request.POST.get('dept', '')
         search_text = request.POST.get('search', '')
@@ -220,6 +225,8 @@ def student_dashboard(request):
         'selected_dept': selected_dept,
         'search_text': search_text,
         'departments': departments,
+        'max_books': max_books,
+        'current_count': current_count,
     })
 
 @login_required
@@ -228,19 +235,31 @@ def borrow_books(request):
     borrowed_books = BorrowedBook.objects.filter(student=student, status='Issued')
     return render(request, 'student_dashboard/borrow_books.html', {'borrowed_books': borrowed_books})
 
-def return_books(request):
-    return render(request, 'student_dashboard/return_books.html')
 
 def profile(request):
     return render(request, 'student_dashboard/profile.html')
 
 @login_required(login_url='student_login')
+
 def request_book(request, book_id):
     book = get_object_or_404(Book, id=book_id)
     student = get_object_or_404(Student, user=request.user)
+    policy = LibraryPolicy.objects.first()
+    max_books = policy.max_books_per_student if policy else 3
+
+    # Count currently issued books and pending requests for this student.
+    current_books_count = BorrowedBook.objects.filter(student=student, status='Issued').count() \
+                          + BookRequest.objects.filter(user=request.user, status='REQUESTED').count()
+
+    if current_books_count >= max_books:
+        return redirect('student_dashboard')
+    
+    # Check if the same book is already issued or requested.
     if BorrowedBook.objects.filter(book=book, student=student, status='Issued').exists() or \
        BookRequest.objects.filter(book=book, user=request.user, status='REQUESTED').exists():
         return redirect('student_dashboard')
+    
+    # Decrement available copies and create book request.
     book.number_of_copies_available -= 1
     book.save()
     BookRequest.objects.create(
@@ -248,7 +267,7 @@ def request_book(request, book_id):
         book=book,
         status='REQUESTED',
         requested_at=timezone.now(),
-        expire_time=timezone.now() + timedelta(hours=4)
+        expire_time=timezone.now() + timedelta(hours=policy.book_request_duration if policy else 4)
     )
     return redirect('student_dashboard')
 
@@ -292,7 +311,6 @@ def accept_book_request(request, book_id, student_id):
     book_request.status = 'ACCEPTED'
     book_request.save()
 
-    messages.success(request, f"Book '{book.title}' issued to {student.name}.")
     return redirect('requested_books')
 
 @user_passes_test(is_staff_user, login_url='login')
@@ -303,7 +321,6 @@ def decline_request_view(request, request_id):
     book = book_request.book
     book.number_of_copies_available += 1
     book.save()
-    messages.info(request, f"Request for '{book.title}' has been declined.")
     return redirect('requested_books')
 
 @user_passes_test(is_staff_user, login_url='login')
@@ -314,19 +331,24 @@ def staff_offline_books(request):
     student = None
     borrowed_books = []
     borrowed_books_ids = []
+    current_books_count = 0
+    
+    policy = LibraryPolicy.objects.first()
+    max_books = policy.max_books_per_student if policy else 3
+
     
 
     if student_id_query:
         try:
-            student = Student.objects.get(student_id=student_id_query)
+            student = Student.objects.get(student_id=student_id_query, is_verified=True)
             borrowed_books = BorrowedBook.objects.filter(student=student, status='Issued')
-
+            pending_requests = BookRequest.objects.filter(user=student.user, status='REQUESTED')
+            current_books_count = borrowed_books.count() + pending_requests.count()
+            borrowed_books_ids = borrowed_books.values_list('book_id', flat=True)
             today = date.today()
             for b in borrowed_books:
-                if b.due_date and today > b.due_date:
-                    b.live_penalty = (today - b.due_date).days * 2 
-                else:
-                    b.live_penalty = 0
+                b.penalty_value = b.live_penalty()  
+                b.save()  
             borrowed_books_ids = borrowed_books.values_list('book_id', flat=True)
         except Student.DoesNotExist:
             student = None
@@ -353,27 +375,37 @@ def staff_offline_books(request):
         'selected_dept': selected_dept,
         'search_text': search_text,
         'borrowed_books_ids': borrowed_books_ids,
+        'max_books': max_books,
+        'current_books_count': current_books_count,
     })
 
 @user_passes_test(is_staff_user, login_url='login')
 def issue_book(request, book_id, student_id):
     book = get_object_or_404(Book, id=book_id)
     student = get_object_or_404(Student, id=student_id)
-    if BorrowedBook.objects.filter(book=book, student=student, status='Issued').exists() or book.number_of_copies_available <= 0:
+    
+    policy = LibraryPolicy.objects.first()
+    max_books = policy.max_books_per_student if policy else 3
+    current_books = BorrowedBook.objects.filter(student=student, status='Issued').count()
+    
+    if current_books >= max_books:
         return redirect('staff_offline_books')
 
+    if BorrowedBook.objects.filter(book=book, student=student, status='Issued').exists() or book.number_of_copies_available <= 0:
+        return redirect('staff_offline_books')
+    
+    max_duration = policy.max_borrow_duration if policy else 7
     BorrowedBook.objects.create(
         book=book,
         student=student,
         issue_date=timezone.now().date(),
-        due_date=timezone.now().date() + timedelta(days=14),
+        due_date=timezone.now().date() + timedelta(days=max_duration),
         status='Issued'
     )
-
     book.number_of_copies_available -= 1
     book.save()
-
     return redirect(request.META.get('HTTP_REFERER', reverse('staff_offline_books')))
+
 
 @login_required
 @user_passes_test(is_staff_user, login_url='login')
@@ -384,9 +416,9 @@ def staff_dashboard(request):
     else:
         full_name = request.user.username
     print("Staff name:", full_name)
-    total_students = Student.objects.count()
+    total_students = Student.objects.filter(is_verified=True).count()
     total_books = Book.objects.count()
-    requested_books = BookRequest.objects.filter(status='requested').count()
+    requested_books = BookRequest.objects.filter(status='REQUESTED').count()
     current_year = timezone.now().year
 
     # Query to get books issued per month
@@ -397,18 +429,31 @@ def staff_dashboard(request):
         .annotate(count=Count('id'))
         .order_by('month')
     )
+    
+    returned_books_data = (
+        BorrowedBook.objects.filter(status='Returned', issue_date__year=current_year)
+        .annotate(month=TruncMonth('issue_date'))
+        .values('month')
+        .annotate(count=Count('id'))
+        .order_by('month')
+    )
+
 
     all_months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     books_issued_dict = {entry['month'].strftime('%B'): entry['count'] for entry in issued_books_data}
-    books_issued_data = [books_issued_dict.get(month, 0) for month in all_months]
-
+    returned_books_dict = {entry['month'].strftime('%B'): entry['count'] for entry in returned_books_data}
+    
+    books_issued = [books_issued_dict.get(month, 0) for month in all_months]
+    books_returned = [returned_books_dict.get(month, 0) for month in all_months]
+    
     return render(request, 'staff_dashboard/staff_dashboard.html', {
         'total_students': total_students,
         'total_books': total_books,
         'requested_books': requested_books,
         'staff_name': full_name,
-        'months': all_months,
-        'books_issued': books_issued_data,
+        'months': json.dumps(all_months),
+        'books_issued': json.dumps(books_issued),
+        'books_returned': json.dumps(books_returned),
     })
 
 
@@ -433,23 +478,24 @@ def return_selected_books(request, student_id):
             try:
                 borrowed = BorrowedBook.objects.get(id=borrow_id, student__id=student_id, status='Issued')
                 borrowed.status = 'Returned'
-                borrowed.actual_return_date = timezone.now().date()  
+                borrowed.actual_return_date = timezone.now().date() 
+                borrowed.penalty = borrowed.live_penalty() 
                 borrowed.save()
 
                 borrowed.book.number_of_copies_available += 1 
                 borrowed.book.save()
             except BorrowedBook.DoesNotExist:
                 continue
-        messages.success(request, f"{len(selected_ids)} book(s) returned successfully.")
-    return redirect('staff_offline_books')
+    return redirect(request.META.get('HTTP_REFERER', reverse('staff_offline_books')))
 
 @login_required(login_url='student_login')
 def return_books(request):
     student = get_object_or_404(Student, user=request.user)
-    returned_books = BorrowedBook.objects.filter(student=student, status='Returned')
-    return render(request, 'student_dashboard/return_books.html', {
-        'returned_books': returned_books
-    })
+    returned_books_list = BorrowedBook.objects.filter(student=student, status='Returned').order_by('-issue_date')
+    paginator = Paginator(returned_books_list, 5) 
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'student_dashboard/return_books.html', {'page_obj': page_obj})
     
 @login_required(login_url='student_login')
 def download_history_pdf(request):
@@ -511,8 +557,7 @@ def add_book(request):
     if request.method == 'POST':
         form = BookForm(request.POST)
         if form.is_valid():
-            form.save()  # Save the book to the database
-            messages.success(request, "Book added successfully.")  # Show success message
+            form.save()  
             return redirect('all_books')  # Redirect to all books page after saving the book
     else:
         form = BookForm()
@@ -538,9 +583,6 @@ def edit_book(request, book_id):
         # Save the book object
         book.save()
         print("Book updated:", book.title)
-        
-        # Return a JSON response indicating success
-        return JsonResponse({'success': True, 'message': 'Book details updated successfully.'})
     
     # For GET method, return the book data as JSON for modal
     elif request.method == 'GET':
@@ -563,8 +605,7 @@ def edit_book(request, book_id):
 @user_passes_test(is_staff_user, login_url='login')  # Only allow staff to delete books
 def delete_book(request, book_id):
     book = get_object_or_404(Book, id=book_id)  # Get the book or return 404 if not found
-    book.delete()  # Delete the book from the database
-    messages.success(request, f"Book '{book.title}' has been deleted successfully.")  # Add success message
+    book.delete()  
     return redirect('all_books')  # Redirect to the all_books page
 
 def staff_profile(request):

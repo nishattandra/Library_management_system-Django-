@@ -61,15 +61,27 @@
                 <td>{{ book.number_of_copies_available }}</td>
                 <td>{{ book.edition }}</td>
                 <td>
-                    {% if book.id in borrowed_books_ids or book.id in requested_book_ids or book.number_of_copies_available == 0 %}
-                    <button class="btn btn-secondary" disabled
-                        title="Unavailable">Request Book</button>
+                    {% if book.id in requested_book_ids %}
+                        <span data-bs-toggle="tooltip" title="Already requested">
+                            <button class="btn btn-secondary" disabled>Requested</button>
+                        </span>
+                    {% elif current_count >= max_books %}
+                        <span data-bs-toggle="tooltip" title="You have reached the maximum allowed books ({{ max_books }})">
+                            <button class="btn btn-secondary" disabled>Request Book</button>
+                        </span>
+                    {% elif book.id in borrowed_books_ids %}
+                        <span data-bs-toggle="tooltip" title="Already Issued">
+                            <button class="btn btn-secondary" disabled>Request Book</button>
+                        </span>
+                    {% elif book.number_of_copies_available == 0 %}
+                        <span data-bs-toggle="tooltip" title="Book is unavailable">
+                            <button class="btn btn-secondary" disabled>Request Book</button>
+                        </span>
                     {% else %}
-                    <form method="post"
-                        action="{% url 'request_book' book.id %}">
-                        {% csrf_token %}
-                        <button class="btn btn-primary">Request Book</button>
-                    </form>
+                        <form method="post" action="{% url 'request_book' book.id %}">
+                            {% csrf_token %}
+                            <button class="btn btn-primary">Request Book</button>
+                        </form>
                     {% endif %}
                 </td>
             </tr>
@@ -107,4 +119,11 @@
         </ul>
     </div>
 </div>
+
+<script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+</script>
 {% endblock %}

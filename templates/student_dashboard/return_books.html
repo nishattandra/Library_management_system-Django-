@@ -1,18 +1,17 @@
 {% extends "student_dashboard/student_base.html" %}
 {% load static %}
-{% block content %}
 
-<div class="container mt-5">
+{% block content %}
+<div class="container-fluid mt-5">
   <div class="row">
-    <div class="col-md-9 offset-md-1">
-      <h1 class="mb-4" style="font-weight: bold;">Return Books</h1>
-      <p class="lead">Here are the books you've returned. Contact staff if
-        anything is missing.</p>
+    <div class="col-12">
+      <h1 class="mb-4 font-weight-bold">Return Books</h1>
+      <p class="lead">Here are the books you've returned. Contact staff if anything is missing.</p>
 
       <div class="card shadow-sm">
         <div class="card-body">
           <table class="table table-bordered table-hover align-middle mb-0">
-            <thead>
+            <thead class="thead-dark">
               <tr>
                 <th>Book Name</th>
                 <th>Borrow Date</th>
@@ -22,7 +21,7 @@
               </tr>
             </thead>
             <tbody>
-              {% for book in returned_books %}
+              {% for book in page_obj.object_list %}
               <tr>
                 <td>{{ book.book.title }}</td>
                 <td>{{ book.issue_date }}</td>
@@ -30,27 +29,62 @@
                 <td>{{ book.actual_return_date|default:"N/A" }}</td>
                 <td>
                   {% if book.live_penalty > 0 %}
-                  <span class="text-danger font-weight-bold">
-                    {{ book.live_penalty }} Taka
-                  </span>
+                    <span class="text-danger font-weight-bold">{{ book.live_penalty }} Taka</span>
                   {% else %}
-                  No penalty
+                    No penalty
                   {% endif %}
                 </td>
               </tr>
               {% empty %}
               <tr>
-                <td colspan="4" class="text-center text-muted">No returned books
-                  found.</td>
+                <td colspan="5" class="text-center text-muted">No returned books found.</td>
               </tr>
               {% endfor %}
             </tbody>
           </table>
         </div>
       </div>
-
+      
+      <!-- Pagination Controls -->
+      {% if page_obj %}
+      <nav aria-label="Page navigation" class="mt-3">
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+              <span aria-hidden="true">&laquo; Previous</span>
+            </a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">&laquo; Previous</span>
+          </li>
+          {% endif %}
+  
+          {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+              <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% else %}
+              <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            {% endif %}
+          {% endfor %}
+  
+          {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+              <span aria-hidden="true">Next &raquo;</span>
+            </a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">Next &raquo;</span>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+      {% endif %}
+      
     </div>
   </div>
 </div>
-
 {% endblock %}

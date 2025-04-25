@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 from .forms import StaffCreationForm
-from .models import Book
+from .models import Book, LibraryPolicy
 from .models import Student
 from django import forms
 from .models import BookRequest, BorrowedBook
@@ -26,16 +26,23 @@ class BookAdmin(admin.ModelAdmin):
     list_display = ['title', 'author', 'edition', 'book_dept', 'number_of_copies_available'] 
     search_fields = ['title', 'author']
     list_filter = ['book_dept', 'edition'] 
-    
-
 admin.site.register(Book, BookAdmin)
 
 
 
-admin.site.register(BookRequest)
+class BookRequestAdmin(admin.ModelAdmin):
+    list_display = ('user', 'book', 'status')
+    list_filter = ('status', 'user', 'book')
+admin.site.register(BookRequest, BookRequestAdmin)
 
-@admin.register(BorrowedBook)
+
+
+
 class BorrowedBookAdmin(admin.ModelAdmin):
-    list_display = ('book', 'student', 'status', 'issue_date', 'due_date', 'actual_return_date', 'live_penalty')
+    list_display = ('book', 'student', 'status', 'issue_date', 'due_date', 'actual_return_date', 'live_penalty', 'penalty_paid')
     list_filter = ('status', 'student', 'book')
     search_fields = ('student__name', 'book__title')
+admin.site.register(BorrowedBook, BorrowedBookAdmin)
+    
+    
+admin.site.register(LibraryPolicy)

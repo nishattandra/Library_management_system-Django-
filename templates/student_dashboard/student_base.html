@@ -8,6 +8,8 @@
         <link
             href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
             rel="stylesheet">
+        <!-- Font Awesome CSS (via CDN) -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     </head>
     <body class="bg-light">
         {% include 'loader.html' %}
@@ -19,26 +21,30 @@
                 <nav>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link text-white"
-                                href="{% url 'student_dashboard' %}">Home</a>
+                            <a class="nav-link text-white" href="{% url 'student_dashboard' %}">
+                                <i class="fas fa-home mr-2"></i>  Home
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white"
-                                href="{% url 'borrow_books' %}">Borrow Books</a>
+                            <a class="nav-link text-white" href="{% url 'borrow_books' %}">
+                                <i class="fas fa-book mr-2"></i>  Borrow Books
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white"
-                                href="{% url 'return_books' %}">Return Books</a>
+                            <a class="nav-link text-white" href="{% url 'return_books' %}">
+                                <i class="fas fa-undo mr-2"></i>  Return Books
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white"
-                                href="{% url 'profile' %}">Profile</a>
+                            <a class="nav-link text-white" href="{% url 'profile' %}">
+                                <i class="fas fa-user mr-2"></i>  Profile
+                            </a>
                         </li>
                         <li class="ml-1">
-                            <a href="{% url 'logout' %}" >
-                              <button class="btn btn-danger text-white  px-3 py-1">
-                                Logout
-                              </button>
+                            <a href="{% url 'logout' %}">
+                                <button class="btn btn-danger text-white px-3 py-1 mt-2">
+                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                                </button>
                             </a>
                         </li>
                           

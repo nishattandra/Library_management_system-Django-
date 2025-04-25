@@ -41,7 +41,7 @@
     <div class="row mt-4">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Books Issued Per Month</div>
+                <div class="card-header">Books Issued and Returned Per Month</div>
                 <div class="card-body">
                     <canvas id="booksChart"></canvas>
                 </div>
@@ -57,14 +57,22 @@
         type: 'bar',
         data: {
             labels: {{ months | safe }},
-            datasets: [{
-                label: 'Books Issued',
-                data: {{ books_issued | safe }},
-                backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-            }]
+            datasets: [
+                {
+                    label: 'Books Issued',
+                    data: {{ books_issued | safe }}.length > 0 ? {{ books_issued | safe }} : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Books Returned',
+                    data: {{ books_returned | safe }}.length > 0 ? {{ books_returned | safe }} : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }
+            ]
         },
         options: {
             responsive: true,
@@ -75,5 +83,5 @@
             }
         }
     });
-</script></div>
+</script>
 {% endblock %}

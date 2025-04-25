@@ -44,7 +44,7 @@
 
             <p class="mb-1"><strong>Name:</strong> {{ student.name }}</p>
             <p class="mb-1"><strong>ID:</strong> {{ student.student_id }}</p>
-            <p class="mb-1"><strong>Email:</strong> {{ student.session }}</p>
+            <p class="mb-1"><strong>Session:</strong> {{ student.session }}</p>
             <p class="mb-1"><strong>Email:</strong> {{ student.email }}</p>
 
         </div>
@@ -177,8 +177,14 @@
                         <td>{{ book.number_of_copies_available }}</td>
                         <td>{{ book.book_dept }}</td>
                         <td>
-                            {% if book.id in borrowed_books_ids %}
-                                <button class="btn btn-warning" disabled title="Already Issued">Issued</button>
+                            {% if current_books_count >= max_books %}
+                                <span data-bs-toggle="tooltip" title="Student has reached maximum issued books ({{ max_books }})">
+                                    <button class="btn btn-warning" disabled>Issue Book</button>
+                                 </span>
+                            {% elif book.id in borrowed_books_ids %}
+                                <span data-bs-toggle="tooltip" title="Already Issued">
+                                    <button class="btn btn-warning" disabled>Issued</button>
+                                 </span>
                             {% else %}
                                 <form action="{% url 'issue_book' book.id student.id %}" method="POST">
                                     {% csrf_token %}
@@ -230,4 +236,10 @@
     </div>
 </div>
 {% endif %}
+<script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+</script>
 {% endblock %}

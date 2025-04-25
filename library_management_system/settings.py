@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-@vrt7d(-7&eyleb%r3*9%^p$q$tot(on1$6b5*zqy3fam9_6ii
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles', 
-    'library.apps.LibraryConfig'
+    'library.apps.LibraryConfig',
 ]
 
 MIDDLEWARE = [
@@ -133,6 +133,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
 
 
 
