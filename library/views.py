@@ -492,7 +492,7 @@ def return_selected_books(request, student_id):
 def return_books(request):
     student = get_object_or_404(Student, user=request.user)
     returned_books_list = BorrowedBook.objects.filter(student=student, status='Returned').order_by('-issue_date')
-    paginator = Paginator(returned_books_list, 5) 
+    paginator = Paginator(returned_books_list, 5)  # 5 books per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'student_dashboard/return_books.html', {'page_obj': page_obj})
