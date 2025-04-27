@@ -5,6 +5,14 @@
 
 {% block content %}
 <h3 class="mb-4">Requested Books</h3>
+<p>
+    Book Request Duration: 
+    {% if policy %}
+        {{ policy.book_request_duration }} hour{% if policy.book_request_duration|floatformat:"0" != "1" %}s{% endif %}
+    {% else %}
+        Not set
+    {% endif %}
+</p>
 <div class="table-responsive">
     <table class="table table-bordered align-middle">
         <thead class="table-light">
@@ -21,41 +29,52 @@
         </thead>
         <tbody>
             {% for req in requests %}
-            <tr>
-                <td>{{ req.book.book_id }}</td>
-                <td>{{ req.user.email }}</td>
-                <td>{{ req.book.title }}</td>
-                <td>{{ req.book.author }}</td>
-                <td>{{ req.book.isbn }}</td>
-                <td>{{ req.requested_at|date:"M d, Y h:i A" }}</td>
-                <td>
-                    {% if req.expire_time %}
-                    {{ req.expire_time|date:"M d, Y h:i A" }}
-                    {% else %}
-                    ---
-                    {% endif %}
-                </td>
-                <td>
-                    {% if req.book.number_of_copies_available > 0 %}
-                    {% if req.user.student %}
-                    <a
-                        href="{% url 'accept_book_request' req.book.id req.user.student.id %}"
-                        class="btn btn-success">Accept</a>
-                    {% else %}
-                    <span class="text-danger">Student data missing</span>
-                    {% endif %}
-                    {% else %}
-                    <span class="text-danger">Already Borrowed</span>
-                    {% endif %}
-                    <a href="{% url 'decline_request' req.id %}"
-                        class="btn btn-sm btn-danger">Decline</a>
-                </td>
-            </tr>
+                {% if req.expire_time and req.expire_time < now %}
+                    <tr class="table-danger">
+                        <td>{{ req.book.book_id }}</td>
+                        <td>{{ req.user.email }}</td>
+                        <td>{{ req.book.title }}</td>
+                        <td>{{ req.book.author }}</td>
+                        <td>{{ req.book.isbn }}</td>
+                        <td>{{ req.requested_at|date:"M d, Y h:i A" }}</td>
+                        <td>{{ req.expire_time|date:"M d, Y h:i A" }}</td>
+                        <td>
+                            <span class="text-danger">Expired – Auto Declined</span>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td>{{ req.book.book_id }}</td>
+                        <td>{{ req.user.email }}</td>
+                        <td>{{ req.book.title }}</td>
+                        <td>{{ req.book.author }}</td>
+                        <td>{{ req.book.isbn }}</td>
+                        <td>{{ req.requested_at|date:"M d, Y h:i A" }}</td>
+                        <td>
+                            {% if req.expire_time %}
+                                {{ req.expire_time|date:"M d, Y h:i A" }}
+                            {% else %}
+                                ---
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if req.book.number_of_copies_available > 0 %}
+                                {% if req.user.student %}
+                                    <a href="{% url 'accept_book_request' req.book.id req.user.student.id %}" class="btn btn-success">Accept</a>
+                                {% else %}
+                                    <span class="text-danger">Student data missing</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="text-danger">Already Borrowed</span>
+                            {% endif %}
+                            <a href="{% url 'decline_request' req.id %}" class="btn btn-sm btn-danger">Decline</a>
+                        </td>
+                    </tr>
+                {% endif %}
             {% empty %}
-            <tr>
-                <td colspan="8" class="text-center">No requested books
-                    found.</td>
-            </tr>
+                <tr>
+                    <td colspan="8" class="text-center">No requested books found.</td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>

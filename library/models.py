@@ -131,6 +131,8 @@ class OfflineBookRequest(models.Model):
 
     def __str__(self):
         return f"{self.book.title} - {self.student.name} - {self.penalty}"
+    
+    
 
 class LibraryPolicy(models.Model):
     PENALTY_TYPE_CHOICES = [
@@ -149,9 +151,16 @@ class LibraryPolicy(models.Model):
     max_books_per_student = models.PositiveIntegerField(default=3)
     max_borrow_duration = models.PositiveIntegerField(help_text="Maximum number of days a book can be borrowed", default=7)
     book_request_duration = models.PositiveIntegerField(default=4, help_text="Duration in hours for a book request to expire")
-    max_renew_times = models.PositiveIntegerField(default=1, help_text="Maximum times a borrowed book can be renewed")
     
     def __str__(self):
         return f"Policy: {self.penalty_type} - {self.penalty_amount} per unit"
     
+
+class Payment(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="payments")
+    borrowed_book = models.ForeignKey(BorrowedBook, on_delete=models.CASCADE, related_name="payments", null=True, blank=True)
+    penalty_amount = models.PositiveIntegerField(default=0)
+    paid_at = models.DateTimeField(auto_now_add=True)
     
+    def __str__(self):
+        return f"{self.student.name} (ID: {self.student.student_id}) paid {self.penalty_amount} Taka on {self.paid_at:%Y-%m-%d}"

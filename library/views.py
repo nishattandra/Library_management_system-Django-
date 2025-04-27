@@ -13,9 +13,10 @@ from datetime import timedelta
 from datetime import date
 from django.http import JsonResponse
 import json
-
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from .forms import StudentRegistrationForm, BookForm
-from .models import Book, LibraryPolicy, Student, BookRequest, BorrowedBook
+from .models import Book, LibraryPolicy, Payment, Student, BookRequest, BorrowedBook
 from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
@@ -229,11 +230,14 @@ def student_dashboard(request):
         'current_count': current_count,
     })
 
-@login_required
+@login_required(login_url='student_login')
 def borrow_books(request):
     student = get_object_or_404(Student, user=request.user)
-    borrowed_books = BorrowedBook.objects.filter(student=student, status='Issued')
-    return render(request, 'student_dashboard/borrow_books.html', {'borrowed_books': borrowed_books})
+    borrowed_books_list = BorrowedBook.objects.filter(student=student, status='Issued').order_by('-issue_date')
+    paginator = Paginator(borrowed_books_list, 5)  # 5 books per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'student_dashboard/borrow_books.html', {'page_obj': page_obj})
 
 
 def profile(request):
@@ -365,12 +369,17 @@ def staff_offline_books(request):
     paginator = Paginator(books_list, 5)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+    
+    paginator_history = Paginator(borrowed_books, 5)  # 5 records per page
+    history_page_number = request.GET.get('history_page')
+    page_obj_history = paginator_history.get_page(history_page_number)
 
     return render(request, 'staff_dashboard/offline_books.html', {
         'student_id_query': student_id_query,
         'student': student,
         'borrowed_books': borrowed_books,
         'page_obj': page_obj,
+        'page_obj_history': page_obj_history,
         'departments': departments,
         'selected_dept': selected_dept,
         'search_text': search_text,
@@ -614,3 +623,36 @@ def staff_profile(request):
         'staff': staff
     }
     return render(request, 'staff_dashboard/staff_profile.html', context)
+
+
+def requested_books(request):
+    # Assuming you already filter your requests properly
+    requests_qs = BookRequest.objects.all().order_by('-requested_at')
+    policy = LibraryPolicy.objects.first()
+    context = {
+        'requests': requests_qs,
+        'policy': policy,
+        'now': timezone.now(),  # current datetime for checking expire_time
+    }
+    return render(request, 'staff_dashboard/requested_books.html', context)
+
+
+@receiver(pre_save, sender=BorrowedBook)
+def create_payment_record(sender, instance, **kwargs):
+    if not instance.pk:
+        return
+
+    try:
+        previous = BorrowedBook.objects.get(pk=instance.pk)
+    except BorrowedBook.DoesNotExist:
+        return
+
+    # Check if penalty_paid is changing from False to True
+    if not previous.penalty_paid and instance.penalty_paid:
+        penalty_amt = instance.live_penalty()
+        if penalty_amt > 0 and not Payment.objects.filter(borrowed_book=instance).exists():
+            Payment.objects.create(
+                student=instance.student,
+                borrowed_book=instance,
+                penalty_amount=penalty_amt
+            )

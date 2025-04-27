@@ -56,9 +56,7 @@
     <!-- LEFT: Borrowed Books -->
     <div class="col-md-6 mb-3">
         <h4 class="mb-3">Borrowed Books History</h4>
-        <form method="POST"
-            action="{% url 'return_selected_books' student.id %}"
-            id="returnForm">
+        <form method="POST" action="{% url 'return_selected_books' student.id %}" id="returnForm">
             {% csrf_token %}
             <input type="hidden" name="student_id" value="{{ student_id_query }}">
             <div class="table-responsive">
@@ -74,7 +72,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for b in borrowed_books %}
+                        {% for b in page_obj_history.object_list %}
                         <tr>
                             <td>
                                 {% if b.status == 'Issued' %}
@@ -84,9 +82,8 @@
                                     value="{{ b.id }}"
                                     data-penalty="{{ b.live_penalty }}"
                                     {% if b.live_penalty|add:"0" > 0 and not b.penalty_paid %}
-                                         disabled title="Cannot return – unpaid penalty"
-                                    {% endif %}
-                                >
+                                        disabled title="Cannot return – unpaid penalty"
+                                    {% endif %}>
                                 {% endif %}
                             </td>
                             <td>{{ b.book.book_id }}</td>
@@ -97,30 +94,59 @@
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="6" class="text-center">No borrowed
-                                books found.</td>
+                            <td colspan="6" class="text-center">No borrowed books found.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-            <button type="submit" class="btn btn-success" id="returnBtn"
-                disabled>Return Selected Books</button>
+            <button type="submit" class="btn btn-success" id="returnBtn" disabled>Return Selected Books</button>
         </form>
+    
+        <!-- Pagination Controls for Borrowed Books History -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center mt-3">
+                {% if page_obj_history.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?student_id={{ student_id_query }}&history_page={{ page_obj_history.previous_page_number }}">Previous</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Previous</span>
+                    </li>
+                {% endif %}
+                
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        Page {{ page_obj_history.number }} of {{ page_obj_history.paginator.num_pages }}
+                    </span>
+                </li>
+                
+                {% if page_obj_history.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?student_id={{ student_id_query }}&history_page={{ page_obj_history.next_page_number }}">Next</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Next</span>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
 
-        <script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
             const checkboxes = document.querySelectorAll('.select-book');
             const returnBtn = document.getElementById('returnBtn');
-        
             checkboxes.forEach(cb => {
                 cb.addEventListener('change', () => {
                     const anyChecked = Array.from(checkboxes).some(box => box.checked);
                     returnBtn.disabled = !anyChecked;
                 });
             });
-        </script>
-
-    </div>
+        });
+    </script>
 
     <!-- RIGHT: Books Available for Issue (Paginated) -->
 

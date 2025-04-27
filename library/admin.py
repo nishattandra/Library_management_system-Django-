@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 from .forms import StaffCreationForm
-from .models import Book, LibraryPolicy
+from .models import Book, LibraryPolicy, Payment
 from .models import Student
 from django import forms
 from .models import BookRequest, BorrowedBook
@@ -46,3 +46,5 @@ admin.site.register(BorrowedBook, BorrowedBookAdmin)
     
     
 admin.site.register(LibraryPolicy)
+
+admin.site.register(Payment)

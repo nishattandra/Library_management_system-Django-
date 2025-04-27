@@ -17,7 +17,7 @@
                 <th>Borrow Date</th>
                 <th>Due Date</th>
                 <th>Returned On</th>
-                <th>Penalty</th>
+                <th>Penalty Amount</th>
               </tr>
             </thead>
             <tbody>
@@ -28,11 +28,13 @@
                 <td>{{ book.due_date }}</td>
                 <td>{{ book.actual_return_date|default:"N/A" }}</td>
                 <td>
-                  {% if book.live_penalty > 0 %}
-                    <span class="text-danger font-weight-bold">{{ book.live_penalty }} Taka</span>
-                  {% else %}
-                    No penalty
-                  {% endif %}
+                  {% with payment=book.payments.first %}
+                    {% if payment and payment.penalty_amount > 0 %}
+                      <span class="text-danger font-weight-bold">{{ payment.penalty_amount }} Taka</span>
+                    {% else %}
+                      N/A
+                    {% endif %}
+                  {% endwith %}
                 </td>
               </tr>
               {% empty %}
