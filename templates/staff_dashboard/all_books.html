@@ -101,6 +101,14 @@
         </div>
     </div>
 </div>
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
     <!-- Filter and Search Form -->
     <div class="row mb-3 align-items-center">
         <!-- Department Filter -->
@@ -314,6 +322,7 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                    console.log("object", data);
                     // Handle the response (success/failure)
                     if (data.success) {
                         alert("Book updated successfully!");

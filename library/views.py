@@ -567,6 +567,7 @@ def add_book(request):
         form = BookForm(request.POST)
         if form.is_valid():
             form.save()  
+            messages.success(request, "Successfully added books")
             return redirect('all_books')  # Redirect to all books page after saving the book
     else:
         form = BookForm()
@@ -588,10 +589,11 @@ def edit_book(request, book_id):
         book.number_of_copies_available = int(request.POST.get('number_of_copies_available', book.number_of_copies_available))
         book.book_dept = request.POST.get('book_dept', book.book_dept)
         book.publication = request.POST.get('publication', book.publication)
-
+        
         # Save the book object
         book.save()
         print("Book updated:", book.title)
+        return JsonResponse({'success': True})
     
     # For GET method, return the book data as JSON for modal
     elif request.method == 'GET':
