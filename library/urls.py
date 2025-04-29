@@ -41,6 +41,10 @@ urlpatterns = [
     path('staff/books/<int:book_id>/delete/', views.delete_book, name='delete_book'),
     path('staff/staff_dashboard/', views.staff_dashboard, name='staff_dashboard'),
     path('staff/staff_profile/', views.staff_profile, name='staff_profile'),
+    path('staff/reports/', views.reports, name='reports'),
+    path('staff/reports/download_books_pdf_report/', views.download_books_pdf_report, name='download_books_pdf_report'),
+    path('staff/reports/generate_borrowed_books_report/', views.generate_borrowed_books_report, name='generate_borrowed_books_report'),
+    path('staff/reports/department-wise-student-list-report/', views.department_wise_student_list_report, name='department_wise_student_list_report'),
     
     #Download history
     path('student/download_history/', views.download_history_pdf, name='download_history'),

@@ -678,3 +678,117 @@ def create_payment_record(sender, instance, **kwargs):
                 borrowed_book=instance,
                 penalty_amount=penalty_amt
             )
+    
+def reports(request):
+    # Get the unique departments from the Book model
+    departments = Book.objects.values_list('book_dept', flat=True).distinct()
+    selected_dept = request.POST.get('department', '')  # Get the selected department from the form
+
+    student_departments = Student.objects.values_list('department', flat=True).distinct()
+
+    # Render the reports page with departments, selected department, and grouped students
+    return render(request, 'staff_dashboard/reports.html', {
+        'departments': departments,
+        'selected_dept': selected_dept,
+        'student_departments': student_departments  # Pass the department-wise students to the template
+    })
+
+    
+def download_books_pdf_report(request):
+    departments = Book.objects.values_list('book_dept', flat=True).distinct()  # Get unique department names
+    selected_dept = request.POST.get('department', '')  # Get the selected department from the form
+
+    # Filter books by department if a department is selected, otherwise fetch all books
+    if selected_dept:
+        books = Book.objects.filter(book_dept=selected_dept)
+    else:
+        books = Book.objects.all()
+
+    # Generate the PDF report when the form is submitted (POST request)
+    template_path = 'report_generate/all_books_report.html'  # Path to the HTML template for the PDF
+    context = {
+        'books': books,
+        'department': selected_dept if selected_dept else 'All Departments',
+    }
+
+    # Render the HTML content with context
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # Create a PDF from the HTML content
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{selected_dept if selected_dept else "all_departments"}_books_report.pdf"'
+
+    # Create the PDF from the HTML
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Error generating PDF', status=500)
+
+    # Return the generated PDF
+    return response
+
+    
+    
+
+def generate_borrowed_books_report(request):
+    department_filter = request.POST.get('department', '')
+    
+    # Query borrowed books and include related student info, and filter by department if provided
+    borrowed_books = BorrowedBook.objects.filter(status='Issued').select_related('student', 'book')
+
+    if department_filter:
+        borrowed_books = borrowed_books.filter(book__book_dept=department_filter)
+
+    # Generate the PDF with the borrowed books and student information
+    template = get_template('report_generate/borrowed_books_report.html')
+    context = {
+        'borrowed_books': borrowed_books,
+        'department_filter': department_filter,
+    }
+
+    html = template.render(context)
+
+    # Create PDF from HTML
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{department_filter if department_filter else "all_departments"}_borrowed_books_report.pdf"'
+
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Error generating PDF', status=500)
+
+    # Return the generated PDF
+    return response
+
+
+def department_wise_student_list_report(request):
+    selected_dept = request.POST.get('department', '')
+
+    # Fetch students based on selected department (department is a CharField in Student model)
+    if selected_dept:
+        students = Student.objects.filter(department=selected_dept)
+    else:
+        students = Student.objects.all()
+
+    # Prepare the context for the report
+    context = {
+        'students': students,
+        'department': selected_dept if selected_dept else 'All Departments',
+    }
+
+    # Render the HTML template for the report
+    template = get_template('report_generate/department_wise_student_list_report.html')
+    html = template.render(context)
+
+    # Create PDF from HTML content
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="department_wise_student_list_{selected_dept if selected_dept else "all_departments"}.pdf"'
+
+    # Generate the PDF
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Error generating PDF', status=500)
+
+    return response
