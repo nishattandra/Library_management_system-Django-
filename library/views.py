@@ -335,11 +335,11 @@ def staff_offline_books(request):
     student = None
     borrowed_books = []
     borrowed_books_ids = []
+    requested_books = [] 
     current_books_count = 0
     
     policy = LibraryPolicy.objects.first()
     max_books = policy.max_books_per_student if policy else 3
-
     
 
     if student_id_query:
@@ -347,6 +347,7 @@ def staff_offline_books(request):
             student = Student.objects.get(student_id=student_id_query, is_verified=True)
             borrowed_books = BorrowedBook.objects.filter(student=student, status='Issued')
             pending_requests = BookRequest.objects.filter(user=student.user, status='REQUESTED')
+            requested_books = pending_requests.values_list('book_id', flat=True)
             current_books_count = borrowed_books.count() + pending_requests.count()
             borrowed_books_ids = borrowed_books.values_list('book_id', flat=True)
             today = date.today()
@@ -364,6 +365,7 @@ def staff_offline_books(request):
         books_list = books_list.filter(book_dept=selected_dept)
     if search_text:
         books_list = books_list.filter(title__icontains=search_text)
+
 
     departments = Book.objects.values_list('book_dept', flat=True).distinct()
     paginator = Paginator(books_list, 5)
@@ -386,6 +388,7 @@ def staff_offline_books(request):
         'borrowed_books_ids': borrowed_books_ids,
         'max_books': max_books,
         'current_books_count': current_books_count,
+        'requested_books': requested_books,
     })
 
 @user_passes_test(is_staff_user, login_url='login')
@@ -396,6 +399,7 @@ def issue_book(request, book_id, student_id):
     policy = LibraryPolicy.objects.first()
     max_books = policy.max_books_per_student if policy else 3
     current_books = BorrowedBook.objects.filter(student=student, status='Issued').count()
+    
     
     if current_books >= max_books:
         return redirect('staff_offline_books')
@@ -615,9 +619,9 @@ def edit_book(request, book_id):
 #delete books
 @user_passes_test(is_staff_user, login_url='login')  # Only allow staff to delete books
 def delete_book(request, book_id):
-    book = get_object_or_404(Book, id=book_id)  # Get the book or return 404 if not found
+    book = get_object_or_404(Book, id=book_id)  
     book.delete()  
-    return redirect('all_books')  # Redirect to the all_books page
+    return redirect('all_books')  
 
 def staff_profile(request):
     staff = request.user
@@ -628,13 +632,29 @@ def staff_profile(request):
 
 
 def requested_books(request):
-    # Assuming you already filter your requests properly
-    requests_qs = BookRequest.objects.all().order_by('-requested_at')
+    requests_qs = BookRequest.objects.filter(status='REQUESTED').order_by('-requested_at')
     policy = LibraryPolicy.objects.first()
+    now = timezone.now()
+    
+    for req in requests_qs:
+        if req.expire_time and req.expire_time < now and req.status != 'DECLINED':
+            req.status = 'DECLINED'
+            req.save()
+
+            book = req.book
+            book.number_of_copies_available += 1
+            book.save()
+
+    
+    paginator = Paginator(requests_qs, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'requests': requests_qs,
         'policy': policy,
-        'now': timezone.now(),  # current datetime for checking expire_time
+        'now': now,  
+        'page_obj': page_obj,
+        'requests': requests_qs,
     }
     return render(request, 'staff_dashboard/requested_books.html', context)
 

@@ -211,6 +211,11 @@
                                 <span data-bs-toggle="tooltip" title="Already Issued">
                                     <button class="btn btn-warning" disabled>Issued</button>
                                  </span>
+                                 
+                            {% elif book.id in requested_books %}
+                                 <span data-bs-toggle="tooltip" title="Already Requested by the student">
+                                     <button class="btn btn-warning" disabled>Requested</button>
+                                 </span>
                             {% else %}
                                 <form action="{% url 'issue_book' book.id student.id %}" method="POST">
                                     {% csrf_token %}

@@ -27,8 +27,8 @@ urlpatterns = [
 
     # Book request logic
     path('books/<int:book_id>/request/', views.request_book, name='request_book'),
-    path('staff/requests/', views.requested_books_view, name='requested_books'),
-    path('staff/requests/<int:request_id>/decline/', views.decline_request_view, name='decline_request'),
+    path('staff/requests/', views.requested_books, name='requested_books'),
+    path('staff/requests/<int:request_id>/decline/', views.decline_request_view, name='decline_request_view'),
     path('staff/requests/accept_book_request/<int:book_id>/<int:student_id>/', views.accept_book_request, name='accept_book_request'),
 
     # Staff - offline & issue book
@@ -41,6 +41,7 @@ urlpatterns = [
     path('staff/books/<int:book_id>/delete/', views.delete_book, name='delete_book'),
     path('staff/staff_dashboard/', views.staff_dashboard, name='staff_dashboard'),
     path('staff/staff_profile/', views.staff_profile, name='staff_profile'),
+    
     #Download history
     path('student/download_history/', views.download_history_pdf, name='download_history'),
 ]

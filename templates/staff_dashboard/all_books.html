@@ -21,6 +21,18 @@
         </button>
    </div>
 
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+        <div class="toast-header">
+            <strong class="me-auto">Success</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body bg-light">
+            Book added successfully!
+        </div>
+    </div>
+</div>
+
   <!-- Add Book Modal -->
 <div class="modal fade" id="addBookModal" tabindex="-1" aria-labelledby="addBookModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -101,14 +113,7 @@
         </div>
     </div>
 </div>
-  {% if messages %}
-    {% for message in messages %}
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% endfor %}
-  {% endif %}
+
     <!-- Filter and Search Form -->
     <div class="row mb-3 align-items-center">
         <!-- Department Filter -->
@@ -215,6 +220,13 @@
         </div>
     </div>
 </div>
+<script>
+    // Show the toast when the form is successfully submitted
+    {% if messages %}
+        var toast = new bootstrap.Toast(document.getElementById('successToast'));
+        toast.show();
+    {% endif %}
+</script>
 
 
 <!-- Edit Book Modal -->
@@ -323,10 +335,8 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log("object", data);
-                    // Handle the response (success/failure)
                     if (data.success) {
                         alert("Book updated successfully!");
-                        // You can add additional actions here like closing the modal, refreshing the page, etc.
                         location.reload();
                     } else {
                         alert("An error occurred.");
