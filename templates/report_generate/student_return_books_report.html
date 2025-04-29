@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Returned Books Report</title>
+</head>
+<body>
+    <h2>Returned Books Report</h2>
+    <p>Student Name: {{ student.name }}</p>
+    <p>Student Email: {{ student.email }}</p>
+    <p>Period: {{ start_date|default:"N/A" }} to {{ end_date|default:"N/A" }}</p>
+
+    <table border="1" cellpadding="10">
+        <thead>
+            <tr>
+                <th>Book Title</th>
+                <th>Return Date</th>
+                <th>Penalty</th> <!-- If you wish to show any penalties -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for returned_book in returned_books %}
+            <tr>
+                <td>{{ returned_book.book.title }}</td>
+                <td>{{ returned_book.actual_return_date }}</td>
+                <td>{{ returned_book.penalty }}</td> <!-- Include penalty if any -->
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

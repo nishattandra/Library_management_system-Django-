@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
@@ -11,6 +12,7 @@ from django.db import IntegrityError
 from django.utils import timezone
 from datetime import timedelta
 from datetime import date
+from datetime import datetime
 from django.http import JsonResponse
 import json
 from django.db.models.signals import pre_save
@@ -509,29 +511,7 @@ def return_books(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'student_dashboard/return_books.html', {'page_obj': page_obj})
-    
-@login_required(login_url='student_login')
-def download_history_pdf(request):
-    student = request.user.student
-    borrowed_books = BorrowedBook.objects.filter(student=student).order_by('-issue_date')
 
-    template_path = 'student_dashboard/pdf_template.html'
-    context = {
-        'student': student,
-        'borrowed_books': borrowed_books
-    }
-
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{student.student_id}_history.pdf"'
-
-    template = get_template(template_path)
-    html = template.render(context)
-
-    pisa_status = pisa.CreatePDF(html, dest=response)
-
-    if pisa_status.err:
-        return HttpResponse('Error generating PDF', status=500)
-    return response
     
 
 @user_passes_test(is_staff_user, login_url='login')
@@ -784,6 +764,105 @@ def department_wise_student_list_report(request):
     # Create PDF from HTML content
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="department_wise_student_list_{selected_dept if selected_dept else "all_departments"}.pdf"'
+
+    # Generate the PDF
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Error generating PDF', status=500)
+
+    return response
+
+
+def student_reports(request):
+    return render(request, 'student_dashboard/student_report.html')
+
+
+
+def borrowed_books_report(request):
+    user = request.user
+
+    # Get the date filters from the form
+    start_date = request.POST.get('start_date', None)
+    end_date = request.POST.get('end_date', None)
+
+    # Convert string dates to datetime objects
+    if start_date:
+        start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+    if end_date:
+        end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+
+    # Fetch the student's borrowed books
+    borrowed_books = BorrowedBook.objects.filter(student__user=user)
+
+    # Apply date filters if provided
+    if start_date:
+        borrowed_books = borrowed_books.filter(issue_date__gte=start_date)  # Filter by start date (issue date)
+    if end_date:
+        borrowed_books = borrowed_books.filter(issue_date__lte=end_date)  # Filter by end date (issue date)
+
+    # Prepare the context for the report
+    context = {
+        'borrowed_books': borrowed_books,
+        'student': user.student,  # Assuming the 'Student' model is linked to the User model
+        'start_date': start_date,
+        'end_date': end_date,
+    }
+
+    # Render the HTML template for the report
+    template = get_template('report_generate/student_borrowed_books_report.html')
+    html = template.render(context)
+
+    # Create PDF from HTML content
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="student_borrowed_books_report.pdf"'
+
+    # Generate the PDF
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Error generating PDF', status=500)
+
+    return response
+
+def student_returned_books_report(request):
+    # Get the logged-in user
+    user = request.user
+
+    # Get the date filters from the form (optional)
+    start_date = request.POST.get('start_date', None)
+    end_date = request.POST.get('end_date', None)
+
+    # Convert string dates to datetime objects if they are provided
+    if start_date:
+        start_date = datetime.strptime(start_date, '%Y-%m-%d').date()  # Use datetime.strptime
+    if end_date:
+        end_date = datetime.strptime(end_date, '%Y-%m-%d').date()  # Use datetime.strptime
+
+    # Fetch the student's returned books (filter by status='Returned')
+    returned_books = BorrowedBook.objects.filter(student__user=user, status='Returned')
+
+    # Apply date filters if provided
+    if start_date:
+        returned_books = returned_books.filter(actual_return_date__gte=start_date)  # Filter by start date (return date)
+    if end_date:
+        returned_books = returned_books.filter(actual_return_date__lte=end_date)  # Filter by end date (return date)
+
+    # Prepare the context for the report
+    context = {
+        'returned_books': returned_books,
+        'student': user.student,  # Assuming the 'Student' model is linked to the User model
+        'start_date': start_date,
+        'end_date': end_date,
+    }
+
+    # Render the HTML template for the report
+    template = get_template('report_generate/student_return_books_report.html')
+    html = template.render(context)
+
+    # Create PDF from HTML content
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="student_returned_books_report.pdf"'
 
     # Generate the PDF
     pisa_status = pisa.CreatePDF(html, dest=response)

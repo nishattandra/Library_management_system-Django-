@@ -24,6 +24,10 @@ urlpatterns = [
     path('student/borrow_books/', views.borrow_books, name='borrow_books'),
     path('student/return_books/', views.return_books, name='return_books'),
     path('student/profile/', views.profile, name='profile'),
+    path('student/student_reports/', views.student_reports, name='student_reports'),
+    path('student/student_report/borrowed-books-report/', views.borrowed_books_report, name='borrowed_books_report'),
+    path('student/student_report/returned-books-report/', views.student_returned_books_report, name='student_returned_books_report'),
+
 
     # Book request logic
     path('books/<int:book_id>/request/', views.request_book, name='request_book'),
@@ -46,8 +50,6 @@ urlpatterns = [
     path('staff/reports/generate_borrowed_books_report/', views.generate_borrowed_books_report, name='generate_borrowed_books_report'),
     path('staff/reports/department-wise-student-list-report/', views.department_wise_student_list_report, name='department_wise_student_list_report'),
     
-    #Download history
-    path('student/download_history/', views.download_history_pdf, name='download_history'),
 ]
 
 # If you're serving media in development
