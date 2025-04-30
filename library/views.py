@@ -194,32 +194,38 @@ def student_dashboard(request):
     student = request.user.student
     borrowed_books_ids = BorrowedBook.objects.filter(student=student, status='Issued').values_list('book__id', flat=True)
     requested_book_ids = BookRequest.objects.filter(user=request.user, status='REQUESTED').values_list('book__id', flat=True)
+    
+    # Get the library policy and max books allowed
     policy = LibraryPolicy.objects.first()
     max_books = policy.max_books_per_student if policy else 3
-    current_count = BorrowedBook.objects.filter(student=request.user.student, status='Issued').count() \
-                    + BookRequest.objects.filter(user=request.user, status='REQUESTED').count()
-    if request.method == 'POST':
-        dept = request.POST.get('dept', '')
-        search_text = request.POST.get('search', '')
-        page = request.POST.get('page', '')
-        request.session['dept'] = dept
-        request.session['search'] = search_text
-        request.session['page'] = page
-        return redirect('student_dashboard')
-    else:
-        selected_dept = request.session.pop('dept', '')
-        search_text = request.session.pop('search', '')
-        page_number = request.session.pop('page', '')
-        books_list = Book.objects.all().order_by('pk')
-        if selected_dept:
-            books_list = books_list.filter(book_dept=selected_dept)
-        if search_text:
-            books_list = books_list.filter(title__icontains=search_text)
-        departments = Book.objects.values_list('book_dept', flat=True).distinct()
+    
+    # Get the current count of borrowed and requested books
+    current_count = BorrowedBook.objects.filter(student=request.user.student, status='Issued').count() + \
+                    BookRequest.objects.filter(user=request.user, status='REQUESTED').count()
 
-    # Pagination
+    # Get department and search filter from GET parameters
+    selected_dept = request.GET.get('dept', '')
+    search_text = request.GET.get('search', '')
+    page_number = request.GET.get('page', 1)  # default to 1 if no page is provided
+
+    # Save filters in session for persistent navigation
+    request.session['dept'] = selected_dept
+    request.session['search'] = search_text
+
+    # Fetch all books and apply filters
+    books_list = Book.objects.all().order_by('pk')
+    if selected_dept:
+        books_list = books_list.filter(book_dept=selected_dept)
+    if search_text:
+        books_list = books_list.filter(title__icontains=search_text)
+
+    # Get distinct departments for the filter dropdown
+    departments = Book.objects.values_list('book_dept', flat=True).distinct()
+
+    # Pagination logic
     paginator = Paginator(books_list, 10)
-    page_obj = paginator.get_page(page_number) if page_number else paginator.get_page(1)
+    page_obj = paginator.get_page(page_number)
+
     return render(request, 'student_dashboard/dashboard.html', {
         'student_name': student.name,
         'borrowed_books_ids': list(borrowed_books_ids),
@@ -231,6 +237,7 @@ def student_dashboard(request):
         'max_books': max_books,
         'current_count': current_count,
     })
+
 
 @login_required(login_url='student_login')
 def borrow_books(request):
