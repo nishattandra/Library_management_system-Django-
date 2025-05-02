@@ -58,9 +58,9 @@
 
 <div class="container w-100 mt-5">
     <div class="col-md-6 mb-3 p-4 border rounded shadow-sm w-100" style="background-color: #5154e6;">
-    <h5 class="mb-4 text-white">Department-wise Student List</h5>
+    <h5 class="mb-4 text-white">Department Wise Student List</h5>
     <p class="text-white">Select a department to view the list of students and download the report.</p>
-        <form method="POST" action="{% url 'department_wise_student_list_report' %}">
+        <form method="POST" action="{% url 'department_wise_student_list_report' %}" >
             {% csrf_token %}
             <div class="form-group mb-4 d-flex align-items-center gap-4">
                 <label for="department" class="text-white font-weight-bold">Select Department: </label>
@@ -71,7 +71,7 @@
                     {% endfor %}
                 </select>
             </div>
-            <button type="submit" class="btn btn-secondary w-25 gap-3">
+            <button type="submit" class="btn btn-secondary w-25 gap-3" target="_blank">
                 <i class="fas fa-download"></i> Download Report
             </button>
         </form>
