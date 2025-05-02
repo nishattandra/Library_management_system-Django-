@@ -156,7 +156,7 @@ def student_login(request):
                     student = user.student 
                 except Student.DoesNotExist:
                     messages.error(request, "No student profile associated with this account. Please register.")
-                    return redirect('student_register')
+                    return redirect('student_login')
                 if student.is_verified:
                     login(request, user)
                     return redirect('student_dashboard')
@@ -752,23 +752,19 @@ def generate_borrowed_books_report(request):
 def department_wise_student_list_report(request):
     selected_dept = request.POST.get('department', '')
 
-    # Fetch students based on selected department (department is a CharField in Student model)
     if selected_dept:
         students = Student.objects.filter(department=selected_dept)
     else:
         students = Student.objects.all()
 
-    # Prepare the context for the report
     context = {
         'students': students,
         'department': selected_dept if selected_dept else 'All Departments',
     }
 
-    # Render the HTML template for the report
     template = get_template('report_generate/department_wise_student_list_report.html')
     html = template.render(context)
 
-    # Create PDF from HTML content
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="department_wise_student_list_{selected_dept if selected_dept else "all_departments"}.pdf"'
 
@@ -833,10 +829,8 @@ def borrowed_books_report(request):
     return response
 
 def student_returned_books_report(request):
-    # Get the logged-in user
     user = request.user
 
-    # Get the date filters from the form (optional)
     start_date = request.POST.get('start_date', None)
     end_date = request.POST.get('end_date', None)
 

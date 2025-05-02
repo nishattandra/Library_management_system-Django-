@@ -6,7 +6,7 @@
     <title>Department-wise Student List Report</title>
 </head>
 <body>
-    <h2>Department-wise Student List</h2>
+    <h2>Department Wise Registered Student List</h2>
     <p>Department: {{ department }}</p>
 
     <table border="1" cellpadding="10">
@@ -15,6 +15,8 @@
                 <th>Student ID</th>
                 <th>Student Name</th>
                 <th>Student Email</th>
+                <th>Department</th>
+                <th>Verification Status</th>
             </tr>
         </thead>
         <tbody>
@@ -23,6 +25,14 @@
                 <td>{{ student.student_id }}</td>
                 <td>{{ student.name }}</td>
                 <td>{{ student.email }}</td>
+                <td>{{ student.department }}</td>
+                <td>
+                    {% if student.is_verified %}
+                        <span style="color:green;">Verified</span>
+                    {% else %}
+                        <span style="color:red;">Not Verified</span>
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>

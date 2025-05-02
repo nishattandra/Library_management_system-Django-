@@ -75,18 +75,11 @@
 
 <div class="login-container">
     <h2>Student Login</h2>
-
-    <!-- Show account not verified -->
-    {% if request.GET.not_verified %}
-        <div class="alert alert-warning" role="alert">
-            Your account is not verified yet. Please wait for admin approval.
-        </div>
-    {% endif %}
-
-    <!-- Show only login form errors -->
-    {% if form.errors %}
+    {% if messages %}
         <div class="alert alert-danger" role="alert">
-            Invalid username or password.
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
         </div>
     {% endif %}
 
